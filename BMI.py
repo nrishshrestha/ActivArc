@@ -29,7 +29,7 @@ def calculate():
             category= "Obese"
             message='You are obese.\nYou need to lose weight.'
 
-        result.config(text=f"Your BMI: {bmi:.2f}\n\nCategory: {category} \n\n{message}",font=('Arial',18))
+        result.config(text=f"Your BMI: {bmi:.2f}\n\nCategory: {category} \n\n{message}",font=('Arial',18),fg='black')
 
     except ValueError:
         result.config(text="Error: Please enter valid values.", fg="red")
@@ -39,7 +39,7 @@ def clear():
     height.delete(0, END)
     weight.delete(0, END)
     gender.set(" ")
-    result.config(text="Your BMI: \n\nCategory: ",font=('Arial',18))
+    result.config(text="Your BMI: \n\nCategory: ",font=('Arial',18),fg='black')
 
 #Age Input
 Label(root,text="Age",font=('Arial',20)).place(x=70,y=30)

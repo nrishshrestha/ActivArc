@@ -1,52 +1,58 @@
 from tkinter import *
 import tkinter as tk
 
-page1 = tk.Tk()
-page1.title("ActivArc")
-page1.geometry("1920x1080")
+def close_page():
+    page1.destroy()
 
-def password_show_hide():
-    check = var.get()
-    if check == 1:
-        password_entry.config(show="")
-    else:
-        password_entry.config(show="*")
+def login():
+    global page1 # make page1 global so that it can be accessed in close_page function
 
-# Creating a Canvas
-Canvas = tk.Canvas(page1, width=800, height=600, highlightbackground="black", highlightthickness=1)
-Canvas.pack(expand=True, padx=20,pady=20)
+    page1 = tk.Tk()
+    page1.title("ActivArc")
+    page1.attributes("-fullscreen",True)
 
-# Username Entrybox and label
-username = Label(page1, text="Username",font=("Times New Roman", 15))
-Canvas.create_window(400,150, window=username)
-username_entry = Entry(page1, font=("Times New Roman", 15))
-Canvas.create_window(400,200,window=username_entry)
+    def password_show_hide():
+        check = var.get()
+        if check == 1:
+            password_entry.config(show="")
+        else:
+            password_entry.config(show="*")
 
-# Password Entrybox and label
-password = Label(page1, text="Password",font=("Times New Roman", 15))
-Canvas.create_window(400,250, window=password)
-password_entry = Entry(page1, font=("Times New Roman", 15),show="*")
-Canvas.create_window(400,300,window=password_entry)
+    # Username Entrybox and label
+    username = Label(page1, text="Username",font=("Times New Roman", 15))
+    username.place(x=400, y=150, anchor="center")
+    username_entry = Entry(page1, font=("Times New Roman", 15))
+    username_entry.place(x=400, y=200, anchor="center")
 
-# Show and Hide password
-var = IntVar()
-c1 = Checkbutton(page1, text="Show Password", variable=var, font=("Times New Roman", 10),command=password_show_hide)
-Canvas.create_window(570,300,window=c1)
+    # Password Entrybox and label
+    password = Label(page1, text="Password",font=("Times New Roman", 15))
+    password.place(x=400, y=250, anchor="center")
+    password_entry = Entry(page1, font=("Times New Roman", 15),show="*")
+    password_entry.place(x=400, y=300, anchor="center")
 
-# Login Button
-login = Button(page1, text="Login",font=("Times New Roman", 15))
-Canvas.create_window(400,350,window=login)
+    # Show and Hide password
+    var = IntVar()
+    c1 = Checkbutton(page1, text="Show Password", variable=var, font=("Times New Roman", 10),command=password_show_hide)
+    c1.place(x=600, y=300, anchor="center")
 
-# Forgot Password
-fpassword = Button(page1, text="Forgot Password",font=("Times New Roman", 15))
-Canvas.create_window(400,400,window=fpassword)
+    # Login Button
+    login = Button(page1, text="Login",font=("Times New Roman", 15),command=close_page)
+    login.place(x=400, y=350, anchor="center")
 
-# Don't Have an account?
-noacc = Label(page1, text="Don't have an account? | Create one for free!",font=("Times New Roman", 10))
-Canvas.create_window(400,450, window=noacc)
+    # Forgot Password
+    fpassword = Button(page1, text="Forgot Password",font=("Times New Roman", 15))
+    fpassword.place(x=400, y=400, anchor="center")
 
-# Sign Up Button
-signup = Button(page1, text="Sign up",font=("Times New Roman", 15))
-Canvas.create_window(400,500,window=signup)
+    # Don't Have an account?
+    noacc = Label(page1, text="Don't have an account? | Create one for free!",font=("Times New Roman", 10),fg="blue")
+    noacc.place(x=400, y=450, anchor="center")
 
-page1.mainloop()
+    # Sign Up Button
+    signup = Button(page1, text="Sign up",font=("Times New Roman", 15))
+    signup.place(x=400, y=475, anchor="center")
+
+    page1.mainloop()
+
+login()
+
+mainloop()

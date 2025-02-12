@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import subprocess
 
 def create_name_fields(frame):
     ttk.Label(frame, text="First Name").grid(row=0, column=0, sticky=tk.W)
@@ -69,6 +70,7 @@ def sign_up():
     print("Sign up clicked")
 
 def show_login(event):
+    subprocess.run(["python", "proj.py"])
     print("Navigate to login page")
 
 def create_signup_form():

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import subprocess
 
 # Function to create name input fields
 def create_name_fields(frame):
@@ -76,6 +77,7 @@ def sign_up():
 
 # Function to handle navigation to login page
 def show_login(event):
+    subprocess.run(["python", "proj.py"])
     print("Navigate to login page")
 
 # Function to create the sign-up form

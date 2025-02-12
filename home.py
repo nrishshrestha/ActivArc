@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 
-# new page for more button
+# new page for more  
 def more():
     more_page=Toplevel()
 
@@ -25,7 +25,7 @@ def more():
 
 home_page=tk.Tk()
 home_page.title("ActivArc")
-home_page.attributes("-fullscreen", True)
+home_page.geometry("600x600")
 home_page.configure(bg="#212121")
 
 # opening image for background

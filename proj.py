@@ -9,8 +9,12 @@ def login():
 
     page1 = tk.Tk()
     page1.title("ActivArc")
-    page1.attributes("-fullscreen", True)
     page1.configure(bg="#212121")
+
+     # Maximize the window manually by getting the screen's dimensions
+    screen_width = page1.winfo_screenwidth()
+    screen_height = page1.winfo_screenheight()
+    page1.geometry(f"{screen_width}x{screen_height}")  # Set window size to screen size
 
     def password_show_hide():
         check = var.get()
@@ -21,7 +25,9 @@ def login():
 
     # Frame for centralization
     main_frame = Frame(page1, bg="lightgray", relief=GROOVE, bd=2, padx=20, pady=20)
-    main_frame.place(x=850, y=400)  # Adjusted for centralization
+    main_frame_width = 400  # Set the width of the frame
+    main_frame_height = 400  # Set the height of the frame
+    main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)  # Center the frame relative to the window
 
     # Username Entrybox and label
     username = Label(main_frame, text="Username", font=("Times New Roman", 15), bg="lightgray")

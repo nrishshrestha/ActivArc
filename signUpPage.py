@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import subprocess
 
+# Function to create name input fields
 def create_name_fields(frame):
     ttk.Label(frame, text="First Name").grid(row=0, column=0, sticky=tk.W)
     first_name = ttk.Entry(frame, width=30)
@@ -12,6 +13,7 @@ def create_name_fields(frame):
     last_name.grid(row=1, column=1, sticky=tk.W)
     return first_name, last_name
 
+# Function to create birthday input fields
 def create_birthday_fields(frame):
     ttk.Label(frame, text="Birthday").grid(row=2, column=0, sticky=tk.W, pady=(10,0))
     
@@ -35,6 +37,7 @@ def create_birthday_fields(frame):
     year.grid(row=0, column=2, padx=5)
     return month, day, year
 
+# Function to create gender selection fields
 def create_gender_fields(frame):
     ttk.Label(frame, text="Gender").grid(row=4, column=0, sticky=tk.W, pady=(10,0))
     
@@ -46,6 +49,7 @@ def create_gender_fields(frame):
     ttk.Radiobutton(gender_frame, text="Female", variable=gender, value="female").grid(row=0, column=1)
     return gender
 
+# Function to create username input fields
 def create_username_fields(frame):
     ttk.Label(frame, text="Username").grid(row=6, column=0, sticky=tk.W, pady=(10,0))
     username = ttk.Entry(frame, width=40)
@@ -56,6 +60,7 @@ def create_username_fields(frame):
     confirm_username.grid(row=9, column=0, columnspan=2, sticky=tk.W)
     return username, confirm_username
 
+# Function to create password input fields
 def create_password_fields(frame):
     ttk.Label(frame, text="Password").grid(row=10, column=0, sticky=tk.W, pady=(10,0))
     password = ttk.Entry(frame, width=30, show="*")
@@ -66,13 +71,16 @@ def create_password_fields(frame):
     confirm_password.grid(row=11, column=1, sticky=tk.W)
     return password, confirm_password
 
+# Function to handle sign up button click
 def sign_up():
     print("Sign up clicked")
 
+# Function to handle navigation to login page
 def show_login(event):
     subprocess.run(["python", "proj.py"])
     print("Navigate to login page")
 
+# Function to create the sign-up form
 def create_signup_form():
     root = tk.Tk()
     root.title("Create a new account")
@@ -80,26 +88,31 @@ def create_signup_form():
     main_frame = ttk.Frame(root, padding="20")
     main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
     
+    # Create input fields
     first_name, last_name = create_name_fields(main_frame)
     month, day, year = create_birthday_fields(main_frame)
     gender = create_gender_fields(main_frame)
     username, confirm_username = create_username_fields(main_frame)
     password, confirm_password = create_password_fields(main_frame)
     
+    # Terms and policy text
     terms_text = "People who use our service may have uploaded your contact information to ActivArc."
     ttk.Label(main_frame, text=terms_text, wraplength=400).grid(row=12, column=0, columnspan=2, pady=(20,5))
     
     policy_text = "By clicking Sign Up, you agree to our Terms, Privacy Policy and Cookies Policy."
     ttk.Label(main_frame, text=policy_text, wraplength=400).grid(row=13, column=0, columnspan=2, pady=(0,10))
     
+    # Sign up button
     ttk.Button(main_frame, text="Sign Up", command=sign_up).grid(row=14, column=0, columnspan=2)
     
+    # Link to login page
     account_link = ttk.Label(main_frame, text="Already have an account?", foreground="blue", cursor="hand2")
     account_link.grid(row=15, column=0, columnspan=2, pady=(10,0))
     account_link.bind("<Button-1>", show_login)
     
     return root
 
+# Main entry point
 if __name__ == "__main__":
     root = create_signup_form()
     root.mainloop()

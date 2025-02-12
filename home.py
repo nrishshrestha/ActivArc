@@ -25,7 +25,7 @@ def more():
 
 home_page=tk.Tk()
 home_page.title("ActivArc")
-home_page.geometry("1920x1080")
+home_page.attributes("-fullscreen", True)
 home_page.configure(bg="#212121")
 
 # opening image for background

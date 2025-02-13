@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
 import hashlib
+import subprocess
 
 # Database initialization
 def init_database():
@@ -42,6 +43,19 @@ def init_database():
     
     conn.commit()
     conn.close()
+
+def show_success_page():
+    success_root = tk.Tk()
+    success_root.title("Password Reset Successful")
+    
+    ttk.Label(success_root, text="Your password is reset. Please go to login page.").pack(pady=20)
+    ttk.Button(success_root, text="Go to Login Page", command=lambda: show_login(success_root)).pack(pady=10)
+    
+    success_root.mainloop()
+
+def show_login(success_root):
+    success_root.destroy()
+    subprocess.run(["python", "loginPage.py"])
 
 def reset_password():
     username = username_entry.get()
@@ -93,8 +107,8 @@ def reset_password():
     conn.commit()
     conn.close()
     
-    messagebox.showinfo("Success", "Password reset successfully!")
     root.destroy()
+    show_success_page()
 
 # Initialize database
 init_database()

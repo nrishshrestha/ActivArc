@@ -1,8 +1,17 @@
 from tkinter import *
 import tkinter as tk
+import subprocess
 
 def close_page():
     page1.destroy()
+
+def open_signup_page():
+    page1.destroy()
+    subprocess.run(["python", "signUpPage.py"])
+
+def open_forgot_password_page():
+    page1.destroy()
+    subprocess.run(["python", "forgotAndResetPassword.py"])
 
 def login():
     global page1  # make page1 global so that it can be accessed in close_page function
@@ -51,7 +60,7 @@ def login():
     login_button.pack(pady=10)
 
     # Forgot Password
-    fpassword = Button(main_frame, text="Forgot Password", font=("Times New Roman", 15))
+    fpassword = Button(main_frame, text="Forgot Password", font=("Times New Roman", 15), command=open_forgot_password_page)
     fpassword.pack(pady=10)
 
     # Don't Have an account?
@@ -59,7 +68,7 @@ def login():
     noacc.pack(pady=10)
 
     # Sign Up Button
-    signup = Button(main_frame, text="Sign up", font=("Times New Roman", 15))
+    signup = Button(main_frame, text="Sign up", font=("Times New Roman", 15), command=open_signup_page)
     signup.pack(pady=10)
 
     page1.mainloop()

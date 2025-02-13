@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+import sqlite3
 
 class CalorieCalculator:
     def __init__(self, root):
@@ -78,7 +80,26 @@ class CalorieCalculator:
         # Clear button
         ttk.Button(root, text="Clear All", 
                    command=self.clear_all).pack(pady=5)
+        
+        # Save button
+        ttk.Button(root, text="Save", 
+                   command=self.save_history).pack(pady=5)
+        
+        # Initialize database
+        self.init_database()
     
+    def init_database(self):
+        self.conn = sqlite3.connect('ActivArcDatabase.db')
+        self.cursor = self.conn.cursor()
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS food_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            food TEXT NOT NULL,
+            weight REAL NOT NULL,
+            calories REAL NOT NULL
+        )
+        ''')
+        self.conn.commit()
     def add_food(self):
         food = self.food_var.get()
         try:
@@ -104,6 +125,17 @@ class CalorieCalculator:
         for item in self.history.get_children():
             self.history.delete(item)
         self.total_var.set("Total: 0 kcal")
+    def save_history(self):
+        for item in self.history.get_children():
+            food, weight, calories = self.history.item(item)["values"]
+            weight = float(weight.replace("g", ""))
+            calories = float(calories.replace(" kcal", ""))
+            self.cursor.execute('''
+            INSERT INTO food_history (food, weight, calories)
+            VALUES (?, ?, ?)
+            ''', (food, weight, calories))
+        self.conn.commit()
+        messagebox.showinfo("Success", "Food history saved successfully!")
 
 if __name__ == "__main__":
     root = tk.Tk()

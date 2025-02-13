@@ -11,7 +11,7 @@ def login():
     page1.title("ActivArc")
     page1.configure(bg="#212121")
 
-     # Maximize the window manually by getting the screen's dimensions
+    # Maximize the window manually by getting the screen's dimensions
     screen_width = page1.winfo_screenwidth()
     screen_height = page1.winfo_screenheight()
     page1.geometry(f"{screen_width}x{screen_height}")  # Set window size to screen size
@@ -47,8 +47,8 @@ def login():
     c1.pack(pady=10, anchor="w")
 
     # Login Button
-    login = Button(main_frame, text="Login", font=("Times New Roman", 15), command=close_page)
-    login.pack(pady=10)
+    login_button = Button(main_frame, text="Login", font=("Times New Roman", 15), command=close_page)
+    login_button.pack(pady=10)
 
     # Forgot Password
     fpassword = Button(main_frame, text="Forgot Password", font=("Times New Roman", 15))
@@ -65,5 +65,3 @@ def login():
     page1.mainloop()
 
 login()
-
-mainloop()

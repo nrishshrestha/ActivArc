@@ -51,16 +51,16 @@ def create_gender_fields(frame):
     ttk.Radiobutton(gender_frame, text="Female", variable=gender, value="female").grid(row=0, column=1)
     return gender
 
-# Function to create username input fields
-def create_username_fields(frame):
+# Function to create username and email input fields
+def create_username_email_fields(frame):
     ttk.Label(frame, text="Username").grid(row=6, column=0, sticky=tk.W, pady=(10,0))
     username = ttk.Entry(frame, width=40)
     username.grid(row=7, column=0, columnspan=2, sticky=tk.W)
     
-    ttk.Label(frame, text="Confirm Username").grid(row=8, column=0, sticky=tk.W, pady=(10,0))
-    confirm_username = ttk.Entry(frame, width=40)
-    confirm_username.grid(row=9, column=0, columnspan=2, sticky=tk.W)
-    return username, confirm_username
+    ttk.Label(frame, text="Enter Your Email").grid(row=8, column=0, sticky=tk.W, pady=(10,0))
+    email = ttk.Entry(frame, width=40)
+    email.grid(row=9, column=0, columnspan=2, sticky=tk.W)
+    return username, email
 
 # Function to create password input fields
 def create_password_fields(frame):
@@ -76,7 +76,19 @@ def create_password_fields(frame):
 # Function to create security question fields
 def create_security_fields(frame):
     ttk.Label(frame, text="Security Question").grid(row=12, column=0, sticky=tk.W, pady=(10,0))
-    security_question = ttk.Entry(frame, width=40)
+    
+    # Security questions list
+    security_questions = [
+        "What was your first pet's name?",
+        "What is your mother's maiden name?",
+        "What city were you born in?",
+        "What was the name of your first school?",
+        "What was your childhood nickname?",
+        "What is the name of the street you grew up on?"
+    ]
+    
+    security_question = ttk.Combobox(frame, values=security_questions, width=40, state='readonly')
+    security_question.set("Select a security question")  # Default text
     security_question.grid(row=13, column=0, columnspan=2, sticky=tk.W)
     
     ttk.Label(frame, text="Security Answer").grid(row=14, column=0, sticky=tk.W, pady=(10,0))
@@ -94,19 +106,15 @@ def sign_up():
     year_val = year.get()
     gender_val = gender.get()
     username_val = username.get()
-    confirm_username_val = confirm_username.get()
+    email_val = email.get()
     password_val = password.get()
     confirm_password_val = confirm_password.get()
     security_question_val = security_question.get()
     security_answer_val = security_answer.get()
     
     # Validate inputs
-    if not all([first_name_val, last_name_val, month_val, day_val, year_val, gender_val, username_val, confirm_username_val, password_val, confirm_password_val, security_question_val, security_answer_val]):
+    if not all([first_name_val, last_name_val, month_val, day_val, year_val, gender_val, username_val, email_val, password_val, confirm_password_val, security_question_val, security_answer_val]):
         messagebox.showerror("Error", "All fields are required")
-        return
-    
-    if username_val != confirm_username_val:
-        messagebox.showerror("Error", "Usernames do not match")
         return
     
     if password_val != confirm_password_val:
@@ -148,11 +156,11 @@ def create_signup_form():
     main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
     
     # Create input fields
-    global first_name, last_name, month, day, year, gender, username, confirm_username, password, confirm_password, security_question, security_answer
+    global first_name, last_name, month, day, year, gender, username, email, password, confirm_password, security_question, security_answer
     first_name, last_name = create_name_fields(main_frame)
     month, day, year = create_birthday_fields(main_frame)
     gender = create_gender_fields(main_frame)
-    username, confirm_username = create_username_fields(main_frame)
+    username, email = create_username_email_fields(main_frame)
     password, confirm_password = create_password_fields(main_frame)
     security_question, security_answer = create_security_fields(main_frame)
     

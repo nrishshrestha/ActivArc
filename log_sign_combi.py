@@ -7,6 +7,9 @@ from typing import List, Tuple, Dict
 import datetime
 from PIL import Image, ImageTk
 
+#Global declarations at the top of the file
+global root, first_name, last_name, month, day, year, gender, username, password, confirm_password
+
 # Database setup
 def database():
     conn = sqlite3.connect("activarc.db")
@@ -30,9 +33,14 @@ def signup(confirm_password_value):
     lname = last_name.get()
     user = username.get()
     passw = password.get()
-    birth_date = f"{year.get()} {month.get()} {day.get()}" # Collecting birth date
+    birth_date = f"{year.get()} {month.get()} {day.get()}"
     gender_value = gender.get()
 
+    # Validate all fields
+    if not all([fname, lname, birth_date, gender_value, user, passw]):
+        messagebox.showerror("Error", "All fields are required")
+        return
+    
     if passw != confirm_password_value:  
         messagebox.showerror("Error", "Passwords do not match!")
         return
@@ -43,12 +51,18 @@ def signup(confirm_password_value):
         cursor.execute("INSERT INTO users (first_name, last_name, birthday, gender, username, password) VALUES (?, ?, ?, ?, ?, ?)",
                        (fname, lname, birth_date, gender_value, user, passw))
         conn.commit()
-        messagebox.showinfo("Success", "Account created successfully!")
-        root.destroy() # Close signup window
-        login() # Redirect to login window
+        conn.close()
+        
+        # Show success message
+        messagebox.showinfo("Success", "You have signed up successfully!")
+        
+        # Destroy signup window and show login page
+        root.destroy()
+        login()
+        
     except sqlite3.IntegrityError:
         messagebox.showerror("Error", "Username already exists!")
-    conn.close()
+        conn.close()
 
 # Login verification
 def verify_login():
@@ -240,9 +254,15 @@ def signup_page():
         # Link to login page
         account_link = ttk.Label(main_frame, text="Already have an account?", foreground="blue", cursor="hand2")
         account_link.grid(row=15, column=0, columnspan=2, pady=(10,0))
-        account_link.bind("<Button-1>",command=login)
+        account_link.bind("<Button-1>", lambda e: switch_to_login(root))
+
         
         return root
+    
+    def switch_to_login(current_window):
+        current_window.destroy()  # Close the sign-up page
+        login()  # Open the login page
+
 
     # Main entry point
     if __name__ == "__main__":
@@ -281,7 +301,7 @@ def home_page():
             def __init__(self, root):
                 self.root = root
                 self.root.title("Simple Calorie Calculator")
-                self.root.geometry("600x400")
+                self.root.geometry("800x600")
                 
                 # Food database
                 self.food_db = {
@@ -613,7 +633,7 @@ def home_page():
 
         Label(root, text=bmi_info_text, font=('Arial', 16), justify="left", bg=bk, fg=oran).place(x=50, y=420)
 
-        bmi.mainloop()
+        root.mainloop()
 
 
     # Maximize the window manually by getting the screen's dimensions

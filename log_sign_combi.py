@@ -152,6 +152,7 @@ def login():
 # Signup page
 def signup_page():
     page1.destroy()
+    
     # Function to create name input fields
     def create_name_fields(frame):
         global first_name,last_name

@@ -66,12 +66,20 @@ def more():
     workout_button=Button(more_page,text="Workout",font=("Times New Roman", 15))
     workout_button.place(x=20,y=100)
 
+    # Log out button
+    log_out_btn=Button(more_page,text="Log Out",font=("Times New Roman",15))
+    log_out_btn.place(x=20,y=150)
+
     mainloop()
 
 home_page=tk.Tk()
 home_page.title("ActivArc")
 home_page.geometry("600x600")
 home_page.configure(bg="#212121")
+
+def logout():
+    home_page.destroy()
+    from log_sign_combi import NONE
 
 def food():
     class CalorieCalculator:
@@ -457,6 +465,10 @@ calorie_button.pack(pady=10,anchor="w")
 # Calorie Burned  
 workout_button=Button(frame1,text="Calorie Burned",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=work)
 workout_button.pack(pady=10,anchor="w")
+
+# Log out Button
+log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)
+log_out_btn.pack(pady=10,anchor="w")
 
 # About us
 about_us=Label(frame1, text=

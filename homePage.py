@@ -40,12 +40,12 @@ def refresh_home_page():
     user_data = database()
     username.config(text=f"Username: {user_data[4]}")
     fullname.config(text=f"Full Name: {user_data[0]} {user_data[1]}")
-    weight.config(text=f"Weight: {user_data[5]}")
-    height.config(text=f"Height: {user_data[6]}")
-    age.config(text=f"Age: {user_data[7]}")
     home_page.update_idletasks()
 
-
+# logout
+def logout():
+    home_page.destroy()
+    from log_sign_combi import NONE
 
 # new page for more  
 def more():
@@ -76,10 +76,6 @@ home_page=tk.Tk()
 home_page.title("ActivArc")
 home_page.geometry("600x600")
 home_page.configure(bg="#212121")
-
-def logout():
-    home_page.destroy()
-    from log_sign_combi import NONE
 
 def food():
     class CalorieCalculator:
@@ -441,18 +437,6 @@ username.pack(pady=10, anchor="w")
 # Full Name
 fullname = Label(frame1, text=f"Full Name: {user_data[0]} {user_data[1]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
 fullname.pack(pady=10, anchor="w")
-
-# Weight
-weight=Label(frame1,text="Weight: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-weight.pack(pady=10,anchor="w") # needs to be pulled from database
-
-# Height
-height=Label(frame1,text="Height: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-height.pack(pady=10,anchor="w") # needs to be pulled from database
-
-# Age
-age=Label(frame1,text="Age: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-age.pack(pady=10,anchor="w") # needs to be pulled from database
 
 # BMI Calculator
 bmi_button=Button(frame1,text="BMI Calculator",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=bmi)

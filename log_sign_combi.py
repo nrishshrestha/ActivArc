@@ -64,6 +64,7 @@ def signup(confirm_password_value):
         messagebox.showerror("Error", "Username already exists!")
         conn.close()
 
+
 # Save the logged-in user ID to a file
 def save_session(user_id):
     with open("session.txt", "w") as file:
@@ -71,6 +72,7 @@ def save_session(user_id):
 
 # Login verification
 logged_in_user_id = None
+
 def verify_login():
     global logged_in_user_id
     user = username_entry.get()
@@ -85,10 +87,10 @@ def verify_login():
     if result:
         logged_in_user_id = result[0]
         save_session(logged_in_user_id)
+
         messagebox.showinfo("Login Successful", "Welcome!")
         page1.destroy()
-        home_page()
-        import homePage
+        from homePage import refresh_home_page 
     else:
         messagebox.showerror("Login Failed", "Invalid Username or Password")
 

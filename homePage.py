@@ -34,6 +34,19 @@ def database():
 
     return user if user else ("N/A", "N/A", "N/A", "N/A", "N/A")
 
+def refresh_home_page():
+    """Reload user data and update the labels."""
+    global user_data
+    user_data = database()
+    username.config(text=f"Username: {user_data[4]}")
+    fullname.config(text=f"Full Name: {user_data[0]} {user_data[1]}")
+    weight.config(text=f"Weight: {user_data[5]}")
+    height.config(text=f"Height: {user_data[6]}")
+    age.config(text=f"Age: {user_data[7]}")
+    home_page.update_idletasks()
+
+
+
 # new page for more  
 def more():
     more_page=Toplevel()

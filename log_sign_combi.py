@@ -64,23 +64,34 @@ def signup(confirm_password_value):
         messagebox.showerror("Error", "Username already exists!")
         conn.close()
 
+# Save the logged-in user ID to a file
+def save_session(user_id):
+    with open("session.txt", "w") as file:
+        file.write(str(user_id))
+
 # Login verification
+logged_in_user_id = None
 def verify_login():
+    global logged_in_user_id
     user = username_entry.get()
     passw = password_entry.get()
 
     conn = sqlite3.connect("activarc.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (user, passw))
-    result = cursor.fetchall()
+    cursor.execute("SELECT id FROM users WHERE username=? AND password=?", (user, passw))
+    result = cursor.fetchone()
     conn.close()
 
     if result:
+        logged_in_user_id = result[0]
+        save_session(logged_in_user_id)
         messagebox.showinfo("Login Successful", "Welcome!")
         page1.destroy()
         home_page()
+        import homePage
     else:
         messagebox.showerror("Login Failed", "Invalid Username or Password")
+
 
 # Login page
 def login():

@@ -1,9 +1,38 @@
 from tkinter import messagebox, ttk
 from typing import List, Tuple, Dict
+import sqlite3
 import datetime
 from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
+
+#Loading session
+def load_session():
+    try:
+        with open("session.txt", "r") as file:
+            return int(file.read().strip())
+    except:
+        return None  # If no session exists, return None
+
+#Fetching data from database
+def database():
+    user_id = load_session()
+
+    if user_id is None:
+        return ("N/A", "N/A", "N/A", "N/A", "N/A")
+
+    conn = sqlite3.connect("activarc.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT first_name, last_name, birthday, gender, username
+        FROM users WHERE id = ?
+    """, (user_id,))
+
+    user = cursor.fetchone()
+    conn.close()
+
+    return user if user else ("N/A", "N/A", "N/A", "N/A", "N/A")
 
 # new page for more  
 def more():
@@ -382,13 +411,15 @@ frame1_width=400 # width of frame1
 frame1_height=screen_height # height of screen
 frame1.place(relx=0.0, rely=0.0, width=frame1_width, height=frame1_height)  # Specify width and height in place()
 
+user_data = database()
+
 # User
-username=Label(frame1,text="Username: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-username.pack(pady=10,anchor="w") # needs to be pulled from database
+username = Label(frame1, text=f"Username: {user_data[4]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+username.pack(pady=10, anchor="w")
 
 # Full Name
-fullname=Label(frame1,text="Full Name: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-fullname.pack(pady=10,anchor="w") # needs to be pulled from database
+fullname = Label(frame1, text=f"Full Name: {user_data[0]} {user_data[1]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+fullname.pack(pady=10, anchor="w")
 
 # Weight
 weight=Label(frame1,text="Weight: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")

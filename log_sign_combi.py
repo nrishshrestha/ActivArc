@@ -64,23 +64,36 @@ def signup(confirm_password_value):
         messagebox.showerror("Error", "Username already exists!")
         conn.close()
 
+
+# Save the logged-in user ID to a file
+def save_session(user_id):
+    with open("session.txt", "w") as file:
+        file.write(str(user_id))
+
 # Login verification
+logged_in_user_id = None
+
 def verify_login():
+    global logged_in_user_id
     user = username_entry.get()
     passw = password_entry.get()
 
     conn = sqlite3.connect("activarc.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (user, passw))
-    result = cursor.fetchall()
+    cursor.execute("SELECT id FROM users WHERE username=? AND password=?", (user, passw))
+    result = cursor.fetchone()
     conn.close()
 
     if result:
+        logged_in_user_id = result[0]
+        save_session(logged_in_user_id)
+
         messagebox.showinfo("Login Successful", "Welcome!")
         page1.destroy()
-        home_page()
+        from homePage import refresh_home_page 
     else:
         messagebox.showerror("Login Failed", "Invalid Username or Password")
+
 
 # Login page
 def login():
@@ -139,6 +152,7 @@ def login():
 # Signup page
 def signup_page():
     page1.destroy()
+    
     # Function to create name input fields
     def create_name_fields(frame):
         global first_name,last_name
@@ -288,6 +302,10 @@ def home_page():
         # Workout button
         workout_button=Button(more_page,text="Workout",font=("Times New Roman", 15))
         workout_button.place(x=20,y=100)
+
+        # Log out button
+        log_out_btn=Button(more_page,text="Log Out",font=("Times New Roman",15))
+        log_out_btn.place(x=20,y=150)
 
         mainloop()
 
@@ -539,6 +557,10 @@ def home_page():
         if __name__ == "__main__":
             app = WorkoutCalculator()
             app.run()
+    
+    def logout():
+        home_page.destroy()
+        login()
 
     def bmi():
         root=Tk()
@@ -678,6 +700,10 @@ def home_page():
     # Calorie Burned  
     workout_button=Button(frame1,text="Calorie Burned",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=work)
     workout_button.pack(pady=10,anchor="w")
+
+    # Log out Button
+    log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)
+    log_out_btn.pack(pady=10,anchor="w")
 
     # About us
     about_us=Label(frame1, text=

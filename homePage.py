@@ -1,9 +1,51 @@
 from tkinter import messagebox, ttk
 from typing import List, Tuple, Dict
+import sqlite3
 import datetime
 from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
+
+#Loading session
+def load_session():
+    try:
+        with open("session.txt", "r") as file:
+            return int(file.read().strip())
+    except:
+        return None  # If no session exists, return None
+
+#Fetching data from database
+def database():
+    user_id = load_session()
+
+    if user_id is None:
+        return ("N/A", "N/A", "N/A", "N/A", "N/A")
+
+    conn = sqlite3.connect("activarc.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT first_name, last_name, birthday, gender, username
+        FROM users WHERE id = ?
+    """, (user_id,))
+
+    user = cursor.fetchone()
+    conn.close()
+
+    return user if user else ("N/A", "N/A", "N/A", "N/A", "N/A")
+
+def refresh_home_page():
+    """Reload user data and update the labels."""
+    global user_data
+    user_data = database()
+    username.config(text=f"Username: {user_data[4]}")
+    fullname.config(text=f"Full Name: {user_data[0]} {user_data[1]}")
+    home_page.update_idletasks()
+
+# logout
+def logout():
+    home_page.destroy()
+    from log_sign_combi import NONE
 
 # new page for more  
 def more():
@@ -23,6 +65,10 @@ def more():
     # Workout button
     workout_button=Button(more_page,text="Workout",font=("Times New Roman", 15))
     workout_button.place(x=20,y=100)
+
+    # Log out button
+    log_out_btn=Button(more_page,text="Log Out",font=("Times New Roman",15))
+    log_out_btn.place(x=20,y=150)
 
     mainloop()
 
@@ -382,25 +428,15 @@ frame1_width=400 # width of frame1
 frame1_height=screen_height # height of screen
 frame1.place(relx=0.0, rely=0.0, width=frame1_width, height=frame1_height)  # Specify width and height in place()
 
+user_data = database()
+
 # User
-username=Label(frame1,text="Username: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-username.pack(pady=10,anchor="w") # needs to be pulled from database
+username = Label(frame1, text=f"Username: {user_data[4]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+username.pack(pady=10, anchor="w")
 
 # Full Name
-fullname=Label(frame1,text="Full Name: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-fullname.pack(pady=10,anchor="w") # needs to be pulled from database
-
-# Weight
-weight=Label(frame1,text="Weight: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-weight.pack(pady=10,anchor="w") # needs to be pulled from database
-
-# Height
-height=Label(frame1,text="Height: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-height.pack(pady=10,anchor="w") # needs to be pulled from database
-
-# Age
-age=Label(frame1,text="Age: ",font=("Times New Roman",15),bg="#212121",fg="#FF9500")
-age.pack(pady=10,anchor="w") # needs to be pulled from database
+fullname = Label(frame1, text=f"Full Name: {user_data[0]} {user_data[1]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+fullname.pack(pady=10, anchor="w")
 
 # BMI Calculator
 bmi_button=Button(frame1,text="BMI Calculator",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=bmi)
@@ -413,6 +449,10 @@ calorie_button.pack(pady=10,anchor="w")
 # Calorie Burned  
 workout_button=Button(frame1,text="Calorie Burned",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=work)
 workout_button.pack(pady=10,anchor="w")
+
+# Log out Button
+log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)
+log_out_btn.pack(pady=10,anchor="w")
 
 # About us
 about_us=Label(frame1, text=

@@ -1,11 +1,11 @@
-from tkinter import *
 import tkinter as tk
+from tkinter import *
 from tkinter import ttk
-import sqlite3
 from tkinter import messagebox
-from typing import List, Tuple, Dict
 import datetime
 from PIL import Image, ImageTk
+import sqlite3
+from typing import List, Tuple, Dict
 
 #Global declarations at the top of the file
 global root, first_name, last_name, month, day, year, gender, username, password, confirm_password
@@ -394,20 +394,27 @@ def home_page():
                         command=self.clear_all).pack(pady=5)
             
             def add_food(self):
-                food = self.food_var.get()
                 try:
+                    food = self.food_var.get()
                     weight = float(self.weight_var.get() or 0)
                     calories = float(self.calories_var.get() or 0) or (self.food_db.get(food, 0) * weight / 100)
                     
-                    if food and calories > 0:
-                        self.history.insert("", 0, values=(food, f"{weight}g", f"{calories:.1f} kcal"))
-                        self.update_total()
+                    if not food:
+                        messagebox.showerror("Error", "Please select a food item")
+                        return
                         
-                        # Clear inputs
-                        self.weight_var.set("")
-                        self.calories_var.set("")
+                    if calories <= 0:
+                        messagebox.showerror("Error", "Calories must be greater than 0")
+                        return
+                        
+                    self.history.insert("", 0, values=(food, f"{weight}g", f"{calories:.1f} kcal"))
+                    self.update_total()
+                    
+                    # Clear inputs
+                    self.weight_var.set("")
+                    self.calories_var.set("")
                 except ValueError:
-                    pass
+                    messagebox.showerror("Error", "Please enter valid numbers")
             
             def update_total(self):
                 total = sum(float(self.history.item(item)["values"][2].split()[0]) 
@@ -559,7 +566,10 @@ def home_page():
             app.run()
     
     def logout():
-        home_page.destroy()
+        try:
+            home_page.destroy()
+        except:
+            pass
         login()
 
     def bmi():
@@ -723,4 +733,4 @@ def home_page():
 
     mainloop()
 
-login()  # starts with login
+login()  # starts with login 

@@ -151,7 +151,7 @@ def login():
     c1.pack(pady=10, anchor="w")
 
     # Login Button
-    login_button = Button(main_frame, text="Login", font=("Times New Roman", 15), command=home_page)
+    login_button = Button(main_frame, text="Login", font=("Times New Roman", 15), command=verify_login)
     login_button.pack(pady=10)
 
     # Forgot Password

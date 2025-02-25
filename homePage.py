@@ -282,14 +282,17 @@ def create_log_tables(parent_frame):
     def load_logs():
         """Load and display food and workout logs from database"""
         try:
-            # Clear existing items and labels
+            # Clear existing items and labels but keep table headers
             for widget in food_frame.winfo_children():
-                if isinstance(widget, Label) and widget.cget("text") not in ["Food Log"]:
+                if isinstance(widget, Label) and widget.cget("text") != "Food Log":
                     widget.destroy()
             for widget in workout_frame.winfo_children():
-                if isinstance(widget, Label) and widget.cget("text") not in ["Workout Log"]:
+                if isinstance(widget, Label) and widget.cget("text") != "Workout Log":
                     widget.destroy()
-            
+            for widget in logs_frame.winfo_children():
+                if isinstance(widget, (Label, Button)):
+                    widget.destroy()
+                
             for item in food_tree.get_children():
                 food_tree.delete(item)
             for item in workout_tree.get_children():
@@ -303,6 +306,10 @@ def create_log_tables(parent_frame):
             conn = sqlite3.connect('activarc.db')
             cursor = conn.cursor()
 
+            # Initialize total calories
+            total_food_calories = 0
+            total_workout_calories = 0
+
             try:
                 # Load food history
                 cursor.execute('''
@@ -312,7 +319,6 @@ def create_log_tables(parent_frame):
                     ORDER BY date_added DESC
                 ''', (user_id,))
                 
-                total_food_calories = 0
                 for idx, (food, weight, calories, date) in enumerate(cursor.fetchall()):
                     try:
                         food_tree.insert('', 'end', iid=f'food_{idx}', values=(
@@ -334,7 +340,6 @@ def create_log_tables(parent_frame):
                     ORDER BY datetime DESC
                 ''', (user_id,))
                 
-                total_workout_calories = 0
                 for idx, (workout, sets, reps, calories, date) in enumerate(cursor.fetchall()):
                     try:
                         workout_tree.insert('', 'end', iid=f'workout_{idx}', values=(
@@ -349,31 +354,41 @@ def create_log_tables(parent_frame):
                         print(f"Error processing workout row {idx}: {e}")
                         continue
 
-                # Update total labels
-                Label(food_frame, 
-                      text=f"Total Calories Consumed: {total_food_calories:.1f} kcal",
-                      font=("Times New Roman", 12), 
-                      bg="#212121", 
-                      fg="#FF9500").pack(pady=5)
-                
-                Label(workout_frame, 
-                      text=f"Total Calories Burned: {total_workout_calories:.1f} kcal",
-                      font=("Times New Roman", 12), 
-                      bg="#212121", 
-                      fg="#FF9500").pack(pady=5)
-
-                # Calculate and display net calories
-                net_calories = total_food_calories - total_workout_calories
-                net_color = "#FF9500" if net_calories <= 2000 else "#DC143C"
-                
-                Label(logs_frame, 
-                      text=f"Net Calories: {net_calories:.1f} kcal",
-                      font=("Times New Roman", 14, "bold"), 
-                      bg="#212121", 
-                      fg=net_color).pack(side=BOTTOM, pady=10)
-
             finally:
                 conn.close()
+
+            # Update total labels
+            Label(food_frame, 
+                  text=f"Total Calories Consumed: {total_food_calories:.1f} kcal",
+                  font=("Times New Roman", 12), 
+                  bg="#212121", 
+                  fg="#FF9500").pack(pady=5)
+            
+            Label(workout_frame, 
+                  text=f"Total Calories Burned: {total_workout_calories:.1f} kcal",
+                  font=("Times New Roman", 12), 
+                  bg="#212121", 
+                  fg="#FF9500").pack(pady=5)
+
+            # Calculate and display net calories
+            net_calories = total_food_calories - total_workout_calories
+            net_color = "#FF9500" if net_calories <= 2000 else "#DC143C"
+            
+            net_label = Label(logs_frame, 
+                             text=f"Net Calories: {net_calories:.1f} kcal",
+                             font=("Times New Roman", 14, "bold"), 
+                             bg="#212121", 
+                             fg=net_color)
+            net_label.pack(side=BOTTOM, pady=10)
+
+            # Add refresh button
+            refresh_btn = Button(logs_frame, 
+                               text="↻ Refresh Logs", 
+                               font=("Times New Roman", 12),
+                               bg="#282828", 
+                               fg="#FF9500",
+                               command=load_logs)
+            refresh_btn.pack(side=BOTTOM, pady=5)
 
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Failed to load logs: {str(e)}")
@@ -382,13 +397,6 @@ def create_log_tables(parent_frame):
 
     # Load logs initially
     load_logs()
-
-    # Add refresh button
-    refresh_btn = Button(logs_frame, text="↻ Refresh Logs", 
-                        font=("Times New Roman", 12),
-                        bg="#282828", fg="#FF9500",
-                        command=load_logs)
-    refresh_btn.pack(side=BOTTOM, pady=10)
 
 create_log_tables(home_page)
 

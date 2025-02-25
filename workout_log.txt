@@ -24,3 +24,12 @@ Workout: Lunges          Sets: 5000  Reps: 1000  Calories: 2000000.0 kcal
 --------------------------------------------------
 Total Calories Burned: 2000000.0 kcal
 
+
+=== Workout Log ===
+User ID: 10
+Date: 2025-02-26 01:41:52
+--------------------------------------------------
+Workout: Tricep Dips     Sets: 6     Reps: 7     Calories: 21.0 kcal
+--------------------------------------------------
+Total Calories Burned: 21.0 kcal
+

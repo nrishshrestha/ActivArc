@@ -1,0 +1,20 @@
+
+=== Food Log ===
+User ID: 1
+Date: 2025-02-25 22:19:17
+--------------------------------------------------
+Food: Meat                 Weight: 100.0g     Calories: 500.0 kcal
+Food: Egg                  Weight: 100.0g     Calories: 300.0 kcal
+--------------------------------------------------
+Total Calories: 800.0 kcal
+
+
+=== Food Log ===
+User ID: 1
+Date: 2025-02-25 22:24:59
+--------------------------------------------------
+Food: Yogurt               Weight: 30.0g      Calories: 45.0 kcal
+Food: Cauliflower and Potatoes Weight: 50.0g      Calories: 75.0 kcal
+--------------------------------------------------
+Total Calories: 120.0 kcal
+

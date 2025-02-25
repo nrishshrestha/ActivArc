@@ -165,7 +165,7 @@ def create_signup_form():
     
 def switch_to_login(current_window):
     current_window.destroy()  # Close the sign-up page
-    subprocess.run(["python", "loginPage.py"])
+    subprocess.run(["python", "log_sign_combi.py"])
 
 # Main entry point
 if __name__ == "__main__":

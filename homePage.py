@@ -68,11 +68,18 @@ def more():
     workout_button=Button(more_page,text="Workout",font=("Times New Roman", 15))
     workout_button.place(x=20,y=100)
 
+    #Change Password button
+    change_pswd=Button(more_page,text="Change Password",font=("Times New Roman",15))
+    change_pswd.place(x=20,y=150)
+
     # Log out button
     log_out_btn=Button(more_page,text="Log Out",font=("Times New Roman",15))
-    log_out_btn.place(x=20,y=150)
+    log_out_btn.place(x=20,y=200)
 
     mainloop()
+
+def change_pwd():
+    subprocess.run(["python","forgotAndResetPassword.py"])
 
 home_page=tk.Tk()
 home_page.title("ActivArc")
@@ -121,6 +128,10 @@ calorie_button.pack(pady=10,anchor="w")
 # Calorie Burned  
 workout_button=Button(frame1,text="Calorie Burned",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=work)
 workout_button.pack(pady=10,anchor="w")
+
+# Change Password Button   
+change_pwd = Button(frame1, text="Change Password",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=change_pwd)
+change_pwd.pack(pady=10,anchor="w")
 
 # Log out Button
 log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)

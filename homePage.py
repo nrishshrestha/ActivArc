@@ -16,6 +16,46 @@ def load_session():
         print(f"Error loading session: {e}")
         return None
 
+def init_database():
+    """Initialize database tables if they don't exist"""
+    try:
+        conn = sqlite3.connect('activarc.db')
+        cursor = conn.cursor()
+        
+        # Create food_history table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS food_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            food TEXT NOT NULL,
+            weight REAL NOT NULL,
+            calories REAL NOT NULL,
+            date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        ''')
+        
+        # Create workouts table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS workouts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            workout TEXT NOT NULL,
+            sets INTEGER NOT NULL,
+            reps INTEGER NOT NULL,
+            calories_burned REAL NOT NULL,
+            datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        ''')
+        
+        conn.commit()
+        conn.close()
+        print("Database tables initialized successfully")
+        
+    except sqlite3.Error as e:
+        print(f"Database initialization error: {e}")
+
 # Fetching data from database
 def database():
     user_id = load_session()
@@ -172,6 +212,184 @@ if os.path.exists("banner.png"):
     banner_label.place(relx=0.5, rely=0.5, anchor="center")
 else:
     print("Error: banner.png not found!")
+
+def create_log_tables(parent_frame):
+    # Create a frame for both tables
+    logs_frame = Frame(parent_frame, bg="#212121")
+    logs_frame.place(relx=0.26, rely=0.6, relwidth=0.74, relheight=0.4)
+
+    # Style configuration for tables
+    style = ttk.Style()
+    style.configure("Treeview",
+                   background="#282828",
+                   foreground="#FF9500",
+                   fieldbackground="#282828")
+    style.configure("Treeview.Heading",
+                   background="#FF9500",
+                   foreground="#282828",
+                   relief="flat")
+
+    # Create frames for each table
+    food_frame = Frame(logs_frame, bg="#212121")
+    food_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=10)
+    
+    workout_frame = Frame(logs_frame, bg="#212121")
+    workout_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=10)
+
+    # Food Log Table
+    Label(food_frame, text="Food Log", font=("Times New Roman", 14, "bold"), 
+          bg="#212121", fg="#FF9500").pack(pady=5)
+    
+    food_tree = ttk.Treeview(food_frame, height=8)
+    food_tree['columns'] = ('Food', 'Weight', 'Calories', 'Date')
+    
+    food_tree.column('#0', width=0, stretch=NO)
+    food_tree.column('Food', anchor=W, width=100)
+    food_tree.column('Weight', anchor=CENTER, width=70)
+    food_tree.column('Calories', anchor=CENTER, width=70)
+    food_tree.column('Date', anchor=CENTER, width=100)
+    
+    food_tree.heading('Food', text='Food', anchor=W)
+    food_tree.heading('Weight', text='Weight', anchor=CENTER)
+    food_tree.heading('Calories', text='Calories', anchor=CENTER)
+    food_tree.heading('Date', text='Date', anchor=CENTER)
+    
+    food_tree.pack(fill=X, padx=5)
+
+    # Workout Log Table
+    Label(workout_frame, text="Workout Log", font=("Times New Roman", 14, "bold"), 
+          bg="#212121", fg="#FF9500").pack(pady=5)
+    
+    workout_tree = ttk.Treeview(workout_frame, height=8)
+    workout_tree['columns'] = ('Workout', 'Sets', 'Reps', 'Calories', 'Date')
+    
+    workout_tree.column('#0', width=0, stretch=NO)
+    workout_tree.column('Workout', anchor=W, width=100)
+    workout_tree.column('Sets', anchor=CENTER, width=50)
+    workout_tree.column('Reps', anchor=CENTER, width=50)
+    workout_tree.column('Calories', anchor=CENTER, width=70)
+    workout_tree.column('Date', anchor=CENTER, width=100)
+    
+    workout_tree.heading('Workout', text='Workout', anchor=W)
+    workout_tree.heading('Sets', text='Sets', anchor=CENTER)
+    workout_tree.heading('Reps', text='Reps', anchor=CENTER)
+    workout_tree.heading('Calories', text='Calories', anchor=CENTER)
+    workout_tree.heading('Date', text='Date', anchor=CENTER)
+    
+    workout_tree.pack(fill=X, padx=5)
+
+    # Function to load data from database
+    def load_logs():
+        # Clear existing items
+        for item in food_tree.get_children():
+            food_tree.delete(item)
+        for item in workout_tree.get_children():
+            workout_tree.delete(item)
+
+        try:
+            user_id = load_session()
+            if not user_id:
+                messagebox.showerror("Error", "No active session found")
+                return
+
+            conn = sqlite3.connect('activarc.db')
+            cursor = conn.cursor()
+
+            try:
+                # Load food log
+                cursor.execute('''
+                    SELECT food, weight, calories, date_added 
+                    FROM food_history 
+                    WHERE user_id = ? 
+                    ORDER BY date_added DESC 
+                    LIMIT 10
+                ''', (user_id,))
+                
+                food_rows = cursor.fetchall()
+                for idx, row in enumerate(food_rows):
+                    try:
+                        food_tree.insert('', 'end', iid=f'food_{idx}', values=(
+                            str(row[0]),                    # Food name
+                            f"{float(row[1]):.1f}g",       # Weight
+                            f"{float(row[2]):.1f} kcal",   # Calories
+                            str(row[3]).split()[0]         # Date
+                        ))
+                    except (ValueError, TypeError) as e:
+                        print(f"Error processing food row {idx}: {e}")
+                        continue
+
+                # Load workout log
+                cursor.execute('''
+                    SELECT workout, sets, reps, calories_burned, datetime
+                    FROM workouts 
+                    WHERE user_id = ?
+                    ORDER BY datetime DESC 
+                    LIMIT 10
+                ''', (user_id,))
+                
+                workout_rows = cursor.fetchall()
+                for idx, row in enumerate(workout_rows):
+                    try:
+                        workout_tree.insert('', 'end', iid=f'workout_{idx}', values=(
+                            str(row[0]),                    # Workout name
+                            int(row[1]),                    # Sets
+                            int(row[2]),                    # Reps
+                            f"{float(row[3]):.1f} kcal",   # Calories
+                            str(row[4]).split()[0]         # Date
+                        ))
+                    except (ValueError, TypeError) as e:
+                        print(f"Error processing workout row {idx}: {e}")
+                        continue
+
+            finally:
+                conn.close()
+
+            # Update totals only if data was loaded
+            if food_tree.get_children() or workout_tree.get_children():
+                update_totals()
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Database Error", f"Failed to load logs: {str(e)}")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+    def update_totals():
+        try:
+            # Calculate totals
+            food_calories = sum(float(food_tree.item(item)["values"][2].split()[0]) 
+                              for item in food_tree.get_children())
+            workout_calories = sum(float(workout_tree.item(item)["values"][3].split()[0]) 
+                                 for item in workout_tree.get_children())
+
+            # Add total labels
+            Label(food_frame, text=f"Total Calories Consumed: {food_calories:.1f} kcal",
+                  font=("Times New Roman", 12), bg="#212121", fg="#FF9500").pack(pady=5)
+            
+            Label(workout_frame, text=f"Total Calories Burned: {workout_calories:.1f} kcal",
+                  font=("Times New Roman", 12), bg="#212121", fg="#FF9500").pack(pady=5)
+
+            # Calculate net calories
+            net_calories = food_calories - workout_calories
+            
+            # Add net calories label with color coding
+            net_color = "#FF9500" if net_calories <= 2000 else "#DC143C"
+            Label(logs_frame, text=f"Net Calories: {net_calories:.1f} kcal",
+                  font=("Times New Roman", 14, "bold"), bg="#212121", fg=net_color).pack(side=BOTTOM, pady=10)
+
+        except Exception as e:
+            print(f"Error updating totals: {e}")
+
+    # Load logs initially
+    load_logs()
+
+    # Add refresh button
+    refresh_btn = Button(logs_frame, text="↻ Refresh Logs", 
+                        font=("Times New Roman", 12),
+                        bg="#282828", fg="#FF9500",
+                        command=load_logs)
+    refresh_btn.pack(side=BOTTOM, pady=10)
+
+create_log_tables(home_page)
 
 user_data = database()
 

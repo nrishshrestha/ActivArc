@@ -6,3 +6,12 @@ Workout: Squats          Sets: 5     Reps: 10    Calories: 30.0 kcal
 Workout: Burpees         Sets: 3     Reps: 15    Calories: 54.0 kcal
 --------------------------------------------------
 Total Calories Burned: 84.0 kcal
+=== Workout Log ===
+User ID: 1
+Date: 2025-02-26 00:41:24
+--------------------------------------------------
+Workout: Rowing          Sets: 12    Reps: 6     Calories: 50.4 kcal
+Workout: Bench Press     Sets: 4     Reps: 10    Calories: 40.0 kcal
+--------------------------------------------------
+Total Calories Burned: 90.4 kcal
+

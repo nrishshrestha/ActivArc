@@ -98,7 +98,7 @@ def del_acc():
 def logout():
     messagebox.showinfo("Logged Out!","Logged out of the system.")
     home_page.destroy()
-    subprocess.run(["python", "loginPage.py"])
+    subprocess.run(["python", "log_sign_combi.py"])
 
 # new page for more
 def more():

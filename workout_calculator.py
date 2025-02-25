@@ -3,7 +3,7 @@ from tkinter import messagebox
 import datetime
 import sqlite3
 
-# Define the calories burned per rep for each workout type
+   # Define the calories burned per rep for each workout type
 CALORIES_PER_REP = { 
     "Push-ups": 0.5,
     "Sit-ups": 0.3,
@@ -11,7 +11,22 @@ CALORIES_PER_REP = {
     "Pull-ups": 1.0,
     "Lunges": 0.4,
     "Burpees": 1.2,
+    "Plank": 0.2,  
+    "Jumping Jacks": 0.1,  
+    "Mountain Climbers": 0.8,  
+    "Deadlifts": 1.5,  
+    "Bench Press": 1.0,  
+    "Rowing": 0.7,  
+    "Bicep Curls": 0.4,  
+    "Tricep Dips": 0.5,  
+    "Box Jumps": 1.0,  
+    "Kettlebell Swings": 0.9,  
+    "Russian Twists": 0.3,
+    "Leg Press": 1.2,  
+    "Crunches": 0.3,
+    "Step-ups": 0.5,
 }
+
 
 # Global variables
 workout_entries = []

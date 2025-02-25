@@ -1,5 +1,4 @@
 from tkinter import messagebox, ttk
-from typing import List, Tuple, Dict
 import sqlite3
 import datetime
 from tkinter import *
@@ -7,7 +6,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import subprocess
 
-#Loading session
+# Loading session
 def load_session():
     try:
         with open("session.txt", "r") as file:
@@ -15,7 +14,7 @@ def load_session():
     except:
         return None  # If no session exists, return None
 
-#Fetching data from database
+# Fetching data from database
 def database():
     user_id = load_session()
 
@@ -91,29 +90,28 @@ def logout():
     home_page.destroy()
     subprocess.run(["python", "loginPage.py"])
 
-# new page for more  
+# new page for more
 def more():
-    more_page=Toplevel()
+    more_page = Toplevel()
     more_page.title("More")
     more_page.geometry("250x1080")
 
 def change_pwd():
-    subprocess.run(["python","forgotAndResetPassword.py"])
+    subprocess.run(["python", "forgotAndResetPassword.py"])
 
-home_page=tk.Tk()
+home_page = tk.Tk()
 home_page.title("ActivArc")
 home_page.geometry("600x600")
 home_page.configure(bg="#212121")
 
 def food():
-    subprocess.run(["python","food.py"])
+    subprocess.run(["python", "food.py"])
 
 def work():
-    subprocess.run(["python","workout_calculator.py"])
+    subprocess.run(["python", "workout_calculator.py"])
 
 def bmi():
-    subprocess.run(["python","BMI.py"])
-
+    subprocess.run(["python", "BMI.py"])
 
 # Maximize the window manually by getting the screen's dimensions
 screen_width = home_page.winfo_screenwidth()
@@ -121,10 +119,32 @@ screen_height = home_page.winfo_screenheight()
 home_page.geometry(f"{screen_width}x{screen_height}")  # Set window size to screen size
 
 # frame1
-frame1=Frame(home_page,bg="#212121",relief=GROOVE,bd=2,padx=20,pady=20) # frame1
-frame1_width=400 # width of frame1
-frame1_height=screen_height # height of screen
+frame1 = Frame(home_page, bg="#212121", relief=GROOVE, bd=2, padx=20, pady=20)  # frame1
+frame1_width = 400  # width of frame1
+frame1_height = screen_height  # height of screen
 frame1.place(relx=0.0, rely=0.0, width=frame1_width, height=frame1_height)  # Specify width and height in place()
+
+# Load and display the logo
+try:
+    image1 = Image.open("image 1.png")
+    # Resize the image here
+    resized_image1 = image1.resize((125, 125), Image.LANCZOS) # Adjust dimensions as needed
+    image1_photo = ImageTk.PhotoImage(resized_image1)
+    image1_label = Label(home_page, image=image1_photo, bg="#212121")
+    image1_label.image = image1_photo
+    image1_label.place(relx=0.25, rely=0.1, anchor=tk.CENTER) # adjust relx,rely, anchor as needed.
+except FileNotFoundError:
+    print("Error: image 1.png not found!")
+
+# Load and display the banner image
+try:
+    banner_image = Image.open("banner.png")
+    banner_photo = ImageTk.PhotoImage(banner_image)
+    banner_label = Label(home_page, image=banner_photo, bg="#212121")  # add background color to label.
+    banner_label.image = banner_photo  # Keep a reference!
+    banner_label.place(relx=0.64, rely=0.5, anchor=tk.CENTER)  # adjust relx,rely, anchor as needed.
+except FileNotFoundError:
+    print("Error: banner.png not found!")
 
 user_data = database()
 
@@ -137,43 +157,31 @@ fullname = Label(frame1, text=f"Full Name: {user_data[0]} {user_data[1]}", font=
 fullname.pack(pady=10, anchor="w")
 
 # BMI Calculator
-bmi_button=Button(frame1,text="BMI Calculator",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=bmi)
-bmi_button.pack(pady=10,anchor="w")
+bmi_button = Button(frame1, text="BMI Calculator", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=bmi)
+bmi_button.pack(pady=10, anchor="w")
 
 # Calorie Eaten
-calorie_button=Button(frame1,text="Calorie Eaten",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=food)
-calorie_button.pack(pady=10,anchor="w")
+calorie_button = Button(frame1, text="Calorie Eaten", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=food)
+calorie_button.pack(pady=10, anchor="w")
 
-# Calorie Burned  
-workout_button=Button(frame1,text="Calorie Burned",font=("Times New Roman", 15),fg="#FF9500",bg="#212121",command=work)
-workout_button.pack(pady=10,anchor="w")
+# Calorie Burned
+workout_button = Button(frame1, text="Calorie Burned", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=work)
+workout_button.pack(pady=10, anchor="w")
 
-# Change Password Button   
-change_pwd = Button(frame1, text="Change Password",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=change_pwd)
-change_pwd.pack(pady=10,anchor="w")
+# Change Password Button
+change_pwd = Button(frame1, text="Change Password", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=change_pwd)
+change_pwd.pack(pady=10, anchor="w")
 
 # Log out Button
-log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)
-log_out_btn.pack(pady=10,anchor="w")
+log_out_btn = Button(frame1, text="Log Out", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=logout)
+log_out_btn.pack(pady=10, anchor="w")
 
 # Delete user Button
-del_user = Button(frame1, text="Delete User",font=("Times New Roman",15),fg="#DC143C",bg="#212121",command=del_acc)
-del_user.pack(pady=10,anchor="w")
+del_user = Button(frame1, text="Delete User", font=("Times New Roman", 15), fg="#DC143C", bg="#212121", command=del_acc)
+del_user.pack(pady=10, anchor="w")
 
 # About us
-about_us=Label(frame1, text=
-               "About us: \n"
-               "At ActivArc, we're passionate about empowering \n"
-               "individuals to achieve their fitness goals.  \n"
-               "Born from a shared desire to make fitness tracking \n"
-               "more accessible and insightful, ActivArc combines \n"
-               "cutting-edge technology with a user-friendly design.\n"
-               "We believe that everyone deserves the tools to \n"
-               "understand their bodies and unlock their full potential.\n"
-               "Our team is dedicated to continuous innovation, constantly \n"
-               "striving to improve ActivArc and provide you with the \n"
-               "most accurate and motivating fitness companion.",
-               font=("Arial", 10),height=15,width=70,justify="center",wraplength=500,bg="#212121",fg="#FF9500")
-about_us.pack(side="bottom",pady=50,anchor="w") 
+about_us = Label(frame1, text="About us: \nAt ActivArc, we're passionate about empowering \nindividuals to achieve their fitness goals. \nBorn from a shared desire to make fitness tracking \nmore accessible and insightful, ActivArc combines \ncutting-edge technology with a user-friendly design.\nWe believe that everyone deserves the tools to \nunderstand their bodies and unlock their full potential.\nOur team is dedicated to continuous innovation, constantly \nstriving to improve ActivArc and provide you with the \nmost accurate and motivating fitness companion.", font=("Arial", 10), height=15, width=70, justify="center", wraplength=500, bg="#212121", fg="#FF9500")
+about_us.pack(side="bottom", pady=50, anchor="w")
 
 mainloop()

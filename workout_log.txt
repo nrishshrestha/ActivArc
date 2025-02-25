@@ -15,3 +15,12 @@ Workout: Bench Press     Sets: 4     Reps: 10    Calories: 40.0 kcal
 --------------------------------------------------
 Total Calories Burned: 90.4 kcal
 
+
+=== Workout Log ===
+User ID: 10
+Date: 2025-02-26 01:00:44
+--------------------------------------------------
+Workout: Lunges          Sets: 5000  Reps: 1000  Calories: 2000000.0 kcal
+--------------------------------------------------
+Total Calories Burned: 2000000.0 kcal
+

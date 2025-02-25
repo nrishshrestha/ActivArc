@@ -36,3 +36,21 @@ Food: Salmon               Weight: 60.0g      Calories: 70.0 kcal
 --------------------------------------------------
 Total Calories: 70.0 kcal
 
+
+=== Food Log ===
+User ID: 10
+Date: 2025-02-26 01:00:18
+--------------------------------------------------
+Food: Chicken Breast       Weight: 1000.0g    Calories: 1650.0 kcal
+Food: Bread                Weight: 1000.0g    Calories: 500.0 kcal
+--------------------------------------------------
+Total Calories: 2150.0 kcal
+
+
+=== Food Log ===
+User ID: 10
+Date: 2025-02-26 01:00:22
+--------------------------------------------------
+--------------------------------------------------
+Total Calories: 0.0 kcal
+

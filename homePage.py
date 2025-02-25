@@ -169,8 +169,8 @@ workout_button = Button(frame1, text="Calorie Burned", font=("Times New Roman", 
 workout_button.pack(pady=10, anchor="w")
 
 # Change Password Button
-change_pwd = Button(frame1, text="Change Password", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=change_pwd)
-change_pwd.pack(pady=10, anchor="w")
+chnge_pwd = Button(frame1, text="Change Password", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=change_pwd)
+chnge_pwd.pack(pady=10, anchor="w")
 
 # Log out Button
 log_out_btn = Button(frame1, text="Log Out", font=("Times New Roman", 15), fg="#FF9500", bg="#212121", command=logout)

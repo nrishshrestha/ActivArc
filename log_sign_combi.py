@@ -28,11 +28,12 @@ def database():
 database() # Initializes the database
 
 # Function to sign up a new user
-def signup(confirm_password_value):  
+def signup():  
     fname = first_name.get()
     lname = last_name.get()
     user = username.get()
     passw = password.get()
+    conf_pass = confirm_password.get()  # Get confirm password directly
     birth_date = f"{year.get()} {month.get()} {day.get()}"
     gender_value = gender.get()
 
@@ -41,7 +42,7 @@ def signup(confirm_password_value):
         messagebox.showerror("Error", "All fields are required")
         return
     
-    if passw != confirm_password_value:  
+    if passw != conf_pass:  # Compare with local confirm password
         messagebox.showerror("Error", "Passwords do not match!")
         return
     
@@ -280,7 +281,7 @@ def signup_page():
         ttk.Label(main_frame, text=policy_text, wraplength=400).grid(row=13, column=0, columnspan=2, pady=(0,10))
         
         # Sign up button
-        ttk.Button(main_frame, text="Sign Up", command=lambda: signup(confirm_password.get())).grid(row=14, column=0, columnspan=2)
+        ttk.Button(main_frame, text="Sign Up", command=lambda: signup()).grid(row=14, column=0, columnspan=2)
         
         # Link to login page
         account_link = ttk.Label(main_frame, text="Already have an account?", foreground="blue", cursor="hand2")
@@ -303,4 +304,4 @@ def home_page():
     # calls homePage
     subprocess.run(["python","homePage.py"])
 
-login()  # starts with login 
+login()  # starts with login

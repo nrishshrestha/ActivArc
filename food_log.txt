@@ -27,3 +27,12 @@ Food: Bread                Weight: 45.0g      Calories: 50.0 kcal
 --------------------------------------------------
 Total Calories: 50.0 kcal
 
+
+=== Food Log ===
+User ID: 1
+Date: 2025-02-26 00:51:50
+--------------------------------------------------
+Food: Salmon               Weight: 60.0g      Calories: 70.0 kcal
+--------------------------------------------------
+Total Calories: 70.0 kcal
+

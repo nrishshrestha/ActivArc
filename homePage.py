@@ -209,7 +209,7 @@ if os.path.exists("banner.png"):
     
     banner_label = Label(banner_frame, image=banner_photo, bg="#212121")
     banner_label.image = banner_photo
-    banner_label.place(relx=0.5, rely=0.5, anchor="center")
+    banner_label.place(relx=0.5, rely=0.3, anchor="center")
 else:
     print("Error: banner.png not found!")
 
@@ -280,13 +280,21 @@ def create_log_tables(parent_frame):
 
     # Function to load data from database
     def load_logs():
-        # Clear existing items
-        for item in food_tree.get_children():
-            food_tree.delete(item)
-        for item in workout_tree.get_children():
-            workout_tree.delete(item)
-
+        """Load and display food and workout logs from database"""
         try:
+            # Clear existing items and labels
+            for widget in food_frame.winfo_children():
+                if isinstance(widget, Label) and widget.cget("text") not in ["Food Log"]:
+                    widget.destroy()
+            for widget in workout_frame.winfo_children():
+                if isinstance(widget, Label) and widget.cget("text") not in ["Workout Log"]:
+                    widget.destroy()
+            
+            for item in food_tree.get_children():
+                food_tree.delete(item)
+            for item in workout_tree.get_children():
+                workout_tree.delete(item)
+
             user_id = load_session()
             if not user_id:
                 messagebox.showerror("Error", "No active session found")
@@ -296,88 +304,81 @@ def create_log_tables(parent_frame):
             cursor = conn.cursor()
 
             try:
-                # Load food log
+                # Load food history
                 cursor.execute('''
                     SELECT food, weight, calories, date_added 
                     FROM food_history 
                     WHERE user_id = ? 
-                    ORDER BY date_added DESC 
-                    LIMIT 10
+                    ORDER BY date_added DESC
                 ''', (user_id,))
                 
-                food_rows = cursor.fetchall()
-                for idx, row in enumerate(food_rows):
+                total_food_calories = 0
+                for idx, (food, weight, calories, date) in enumerate(cursor.fetchall()):
                     try:
                         food_tree.insert('', 'end', iid=f'food_{idx}', values=(
-                            str(row[0]),                    # Food name
-                            f"{float(row[1]):.1f}g",       # Weight
-                            f"{float(row[2]):.1f} kcal",   # Calories
-                            str(row[3]).split()[0]         # Date
+                            food,
+                            f"{float(weight):.1f}g",
+                            f"{float(calories):.1f} kcal",
+                            date.split()[0]
                         ))
+                        total_food_calories += float(calories)
                     except (ValueError, TypeError) as e:
                         print(f"Error processing food row {idx}: {e}")
                         continue
 
-                # Load workout log
+                # Load workout history
                 cursor.execute('''
                     SELECT workout, sets, reps, calories_burned, datetime
                     FROM workouts 
                     WHERE user_id = ?
-                    ORDER BY datetime DESC 
-                    LIMIT 10
+                    ORDER BY datetime DESC
                 ''', (user_id,))
                 
-                workout_rows = cursor.fetchall()
-                for idx, row in enumerate(workout_rows):
+                total_workout_calories = 0
+                for idx, (workout, sets, reps, calories, date) in enumerate(cursor.fetchall()):
                     try:
                         workout_tree.insert('', 'end', iid=f'workout_{idx}', values=(
-                            str(row[0]),                    # Workout name
-                            int(row[1]),                    # Sets
-                            int(row[2]),                    # Reps
-                            f"{float(row[3]):.1f} kcal",   # Calories
-                            str(row[4]).split()[0]         # Date
+                            workout,
+                            sets,
+                            reps,
+                            f"{float(calories):.1f} kcal",
+                            date.split()[0]
                         ))
+                        total_workout_calories += float(calories)
                     except (ValueError, TypeError) as e:
                         print(f"Error processing workout row {idx}: {e}")
                         continue
 
+                # Update total labels
+                Label(food_frame, 
+                      text=f"Total Calories Consumed: {total_food_calories:.1f} kcal",
+                      font=("Times New Roman", 12), 
+                      bg="#212121", 
+                      fg="#FF9500").pack(pady=5)
+                
+                Label(workout_frame, 
+                      text=f"Total Calories Burned: {total_workout_calories:.1f} kcal",
+                      font=("Times New Roman", 12), 
+                      bg="#212121", 
+                      fg="#FF9500").pack(pady=5)
+
+                # Calculate and display net calories
+                net_calories = total_food_calories - total_workout_calories
+                net_color = "#FF9500" if net_calories <= 2000 else "#DC143C"
+                
+                Label(logs_frame, 
+                      text=f"Net Calories: {net_calories:.1f} kcal",
+                      font=("Times New Roman", 14, "bold"), 
+                      bg="#212121", 
+                      fg=net_color).pack(side=BOTTOM, pady=10)
+
             finally:
                 conn.close()
-
-            # Update totals only if data was loaded
-            if food_tree.get_children() or workout_tree.get_children():
-                update_totals()
 
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Failed to load logs: {str(e)}")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
-    def update_totals():
-        try:
-            # Calculate totals
-            food_calories = sum(float(food_tree.item(item)["values"][2].split()[0]) 
-                              for item in food_tree.get_children())
-            workout_calories = sum(float(workout_tree.item(item)["values"][3].split()[0]) 
-                                 for item in workout_tree.get_children())
-
-            # Add total labels
-            Label(food_frame, text=f"Total Calories Consumed: {food_calories:.1f} kcal",
-                  font=("Times New Roman", 12), bg="#212121", fg="#FF9500").pack(pady=5)
-            
-            Label(workout_frame, text=f"Total Calories Burned: {workout_calories:.1f} kcal",
-                  font=("Times New Roman", 12), bg="#212121", fg="#FF9500").pack(pady=5)
-
-            # Calculate net calories
-            net_calories = food_calories - workout_calories
-            
-            # Add net calories label with color coding
-            net_color = "#FF9500" if net_calories <= 2000 else "#DC143C"
-            Label(logs_frame, text=f"Net Calories: {net_calories:.1f} kcal",
-                  font=("Times New Roman", 14, "bold"), bg="#212121", fg=net_color).pack(side=BOTTOM, pady=10)
-
-        except Exception as e:
-            print(f"Error updating totals: {e}")
 
     # Load logs initially
     load_logs()

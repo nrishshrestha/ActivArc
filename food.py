@@ -1,10 +1,21 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import sqlite3
+from datetime import datetime
 
 bk, oran = "#282828", "#FF9500"
 food_db = {"Apple": 52, "Banana": 89, "Chicken Breast": 165, "Rice (cooked)": 130, "Egg": 155, "Bread": 265, "Milk": 42, "Potato": 77, "Pasta (cooked)": 158, "Salmon": 208, "Yogurt": 59, "Cheese": 402, "Peanut Butter": 588, "Oatmeal": 307, "Orange": 47}
 history = total_var = food_var = weight_var = calories_var = conn = cursor = None
+
+def load_session():
+    try:
+        with open("session.txt", "r") as file:
+            content = file.read().strip()
+            if content:
+                return int(content)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Error loading session: {e}")
+    return None
 
 def apply_style():
     style = ttk.Style()
@@ -20,11 +31,21 @@ def apply_style():
     style.configure('TCombobox', fieldbackground=bk, background=bk, foreground=oran, selectbackground=oran, selectforeground=bk)
     style.configure('TEntry', fieldbackground=bk, foreground=oran, insertcolor=oran)
 
+# Replace the init_database function
 def init_database():
     global conn, cursor
-    conn = sqlite3.connect('ActivArcDatabase.db')
+    conn = sqlite3.connect('activarc.db')
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS food_history (id INTEGER PRIMARY KEY AUTOINCREMENT, food TEXT NOT NULL, weight REAL NOT NULL, calories REAL NOT NULL)')
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS food_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        food TEXT NOT NULL,
+        weight REAL NOT NULL,
+        calories REAL NOT NULL,
+        date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )''')
     conn.commit()
 
 def add_food():
@@ -48,12 +69,52 @@ def clear_all():
     for item in history.get_children(): history.delete(item)
     total_var.set("Total: 0 kcal")
 
+# Replace the save_history function
 def save_history():
-    for item in history.get_children():
-        food, weight, calories = history.item(item)["values"]
-        cursor.execute('INSERT INTO food_history (food, weight, calories) VALUES (?, ?, ?)', (food, float(weight.replace("g", "")), float(calories.replace(" kcal", ""))))
-    conn.commit()
-    messagebox.showinfo("Success", "Food history saved successfully!")
+    user_id = load_session()
+    if not user_id:
+        messagebox.showerror("Error", "No active session found. Please log in again.")
+        return
+
+    try:
+        # Save to database
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        for item in history.get_children():
+            food, weight, calories = history.item(item)["values"]
+            weight = float(weight.replace("g", ""))
+            calories = float(calories.replace(" kcal", ""))
+            cursor.execute('''
+            INSERT INTO food_history (user_id, food, weight, calories, date_added)
+            VALUES (?, ?, ?, ?, ?)
+            ''', (user_id, food, weight, calories, current_time))
+        conn.commit()
+        
+        # Save to text file
+        with open("food_log.txt", "a") as file:
+            file.write("\n=== Food Log ===\n")
+            file.write(f"User ID: {user_id}\n")
+            file.write(f"Date: {current_time}\n")
+            file.write("-" * 50 + "\n")
+            
+            # Write food items
+            total_calories = 0
+            for item in history.get_children():
+                food, weight, calories = history.item(item)["values"]
+                calories_float = float(calories.replace(" kcal", ""))
+                total_calories += calories_float
+                file.write(f"Food: {food:<20} Weight: {weight:<10} Calories: {calories}\n")
+            
+            # Write total
+            file.write("-" * 50 + "\n")
+            file.write(f"Total Calories: {total_calories:.1f} kcal\n\n")
+        
+        messagebox.showinfo("Success", "Food history saved successfully!")
+        clear_all()  # Clear the history after saving
+        
+    except sqlite3.Error as e:
+        messagebox.showerror("Error", f"Database error: {str(e)}")
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to save food history: {str(e)}")
 
 def on_closing():
     if conn: conn.close()

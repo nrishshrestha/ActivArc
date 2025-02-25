@@ -5,14 +5,16 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 import subprocess
+import os
 
 # Loading session
 def load_session():
     try:
         with open("session.txt", "r") as file:
             return int(file.read().strip())
-    except:
-        return None  # If no session exists, return None
+    except Exception as e:
+        print(f"Error loading session: {e}")
+        return None
 
 # Fetching data from database
 def database():
@@ -21,18 +23,22 @@ def database():
     if user_id is None:
         return ("N/A", "N/A", "N/A", "N/A", "N/A")
 
-    conn = sqlite3.connect("activarc.db")
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect("activarc.db")
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT first_name, last_name, birthday, gender, username
-        FROM users WHERE id = ?
-    """, (user_id,))
+        cursor.execute("""
+            SELECT first_name, last_name, birthday, gender, username
+            FROM users WHERE id = ?
+        """, (user_id,))
 
-    user = cursor.fetchone()
-    conn.close()
+        user = cursor.fetchone()
+        conn.close()
 
-    return user if user else ("N/A", "N/A", "N/A", "N/A", "N/A")
+        return user if user else ("N/A", "N/A", "N/A", "N/A", "N/A")
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return ("N/A", "N/A", "N/A", "N/A", "N/A")
 
 def refresh_home_page():
     """Reload user data and update the labels."""
@@ -69,17 +75,20 @@ def del_acc():
             messagebox.showerror("Error", "Please fill all the fields!")
             return
 
-        # Delete user from database
-        conn = sqlite3.connect("activarc.db")
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM users WHERE username=? AND password=?", (user, passw))
-        conn.commit()
-        conn.close()
+        try:
+            # Delete user from database
+            conn = sqlite3.connect("activarc.db")
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM users WHERE username=? AND password=?", (user, passw))
+            conn.commit()
+            conn.close()
 
-        messagebox.showinfo("Success", "Account deleted successfully!")
-        delete_page.destroy()
-        home_page.destroy()
-        subprocess.run(["python", "loginPage.py"])
+            messagebox.showinfo("Success", "Account deleted successfully!")
+            delete_page.destroy()
+            home_page.destroy()
+            subprocess.run(["python", "loginPage.py"])
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Database error: {e}")
 
     # Confirm
     con = Button(delete_page, text="Confirm Delete", font=("Times New Roman", 12), fg="#FF9500", bg="#212121", command=confirm_delete)
@@ -125,25 +134,24 @@ frame1_height = screen_height  # height of screen
 frame1.place(relx=0.0, rely=0.0, width=frame1_width, height=frame1_height)  # Specify width and height in place()
 
 # Load and display the logo
-try:
+if os.path.exists("image 1.png"):
     image1 = Image.open("image 1.png")
-    # Resize the image here
     resized_image1 = image1.resize((125, 125), Image.LANCZOS) # Adjust dimensions as needed
     image1_photo = ImageTk.PhotoImage(resized_image1)
     image1_label = Label(home_page, image=image1_photo, bg="#212121")
     image1_label.image = image1_photo
     image1_label.place(relx=0.25, rely=0.1, anchor=tk.CENTER) # adjust relx,rely, anchor as needed.
-except FileNotFoundError:
+else:
     print("Error: image 1.png not found!")
 
 # Load and display the banner image
-try:
+if os.path.exists("banner.png"):
     banner_image = Image.open("banner.png")
     banner_photo = ImageTk.PhotoImage(banner_image)
     banner_label = Label(home_page, image=banner_photo, bg="#212121")  # add background color to label.
     banner_label.image = banner_photo  # Keep a reference!
     banner_label.place(relx=0.64, rely=0.5, anchor=tk.CENTER)  # adjust relx,rely, anchor as needed.
-except FileNotFoundError:
+else:
     print("Error: banner.png not found!")
 
 user_data = database()

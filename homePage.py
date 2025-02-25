@@ -83,8 +83,8 @@ def del_acc():
             conn.commit()
             conn.close()
 
-            messagebox.showinfo("Success", "Account deleted successfully!")
             delete_page.destroy()
+            messagebox.showinfo("Success", "Account deleted successfully!")
             home_page.destroy()
             subprocess.run(["python", "loginPage.py"])
         except sqlite3.Error as e:
@@ -96,6 +96,7 @@ def del_acc():
 
 # logout
 def logout():
+    messagebox.showinfo("Logged Out!","Logged out of the system.")
     home_page.destroy()
     subprocess.run(["python", "loginPage.py"])
 

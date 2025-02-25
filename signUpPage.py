@@ -43,7 +43,7 @@ def signup():
         # Destroy signup window and show login page
         root.destroy()
         # Switch to login page
-        subprocess.run(["python", "loginPage.py"])
+        subprocess.run(["python", "log_sign_combi.py"])
         
     except sqlite3.IntegrityError:
         messagebox.showerror("Error", "Username already exists!")

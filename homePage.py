@@ -140,17 +140,18 @@ if os.path.exists("image 1.png"):
     image1_photo = ImageTk.PhotoImage(resized_image1)
     image1_label = Label(home_page, image=image1_photo, bg="#212121")
     image1_label.image = image1_photo
-    image1_label.place(relx=0.25, rely=0.1, anchor=tk.CENTER) # adjust relx,rely, anchor as needed.
+    image1_label.place(relx=0.25, rely=0.1, anchor=tk.CENTER) 
 else:
     print("Error: image 1.png not found!")
 
 # Load and display the banner image
 if os.path.exists("banner.png"):
     banner_image = Image.open("banner.png")
-    banner_photo = ImageTk.PhotoImage(banner_image)
+    resize_banner = banner_image.resize((1366, 780), Image.LANCZOS) # Adjust dimensions as needed
+    banner_photo = ImageTk.PhotoImage(resize_banner)
     banner_label = Label(home_page, image=banner_photo, bg="#212121")  # add background color to label.
-    banner_label.image = banner_photo  # Keep a reference!
-    banner_label.place(relx=0.64, rely=0.5, anchor=tk.CENTER)  # adjust relx,rely, anchor as needed.
+    banner_label.image = banner_photo  
+    banner_label.place(relx=0.64, rely=0.5, anchor=tk.CENTER) 
 else:
     print("Error: banner.png not found!")
 

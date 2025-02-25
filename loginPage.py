@@ -4,6 +4,7 @@ import subprocess
 
 def close_page():
     page1.destroy()
+    subprocess.run(["python","homePage.py"])
 
 def open_signup_page():
     page1.destroy()

@@ -129,40 +129,57 @@ home_page.geometry(f"{screen_width}x{screen_height}")  # Set window size to scre
 
 # frame1
 frame1 = Frame(home_page, bg="#212121", relief=GROOVE, bd=2, padx=20, pady=20)  # frame1
-frame1_width = 400  # width of frame1
+frame1_width = int(screen_width * 0.25)  # 25% of screen width for the left panel
 frame1_height = screen_height  # height of screen
 frame1.place(relx=0.0, rely=0.0, width=frame1_width, height=frame1_height)  # Specify width and height in place()
 
-# Load and display the logo
+# Modify the logo size and position
 if os.path.exists("image 1.png"):
     image1 = Image.open("image 1.png")
-    resized_image1 = image1.resize((125, 125), Image.LANCZOS) # Adjust dimensions as needed
+    # Make logo smaller - 15% of frame width instead of 60%
+    logo_width = int(frame1_width * 0.15)  
+    logo_height = logo_width  # Keep aspect ratio square
+    resized_image1 = image1.resize((logo_width, logo_height), Image.LANCZOS)
     image1_photo = ImageTk.PhotoImage(resized_image1)
-    image1_label = Label(home_page, image=image1_photo, bg="#212121")
+    image1_label = Label(frame1, image=image1_photo, bg="#212121")
     image1_label.image = image1_photo
-    image1_label.place(relx=0.25, rely=0.1, anchor=tk.CENTER) 
+    # Position logo in top-left corner with small padding
+    image1_label.pack(pady=(10, 5), padx=(5, 0), anchor="w")  
 else:
     print("Error: image 1.png not found!")
 
-# Load and display the banner image
+# Load and display the banner image with adjusted position
 if os.path.exists("banner.png"):
     banner_image = Image.open("banner.png")
-    resize_banner = banner_image.resize((1366, 780), Image.LANCZOS) # Adjust dimensions as needed
+    banner_width = int(screen_width * 0.73)  # 73% of screen width
+    banner_height = int(screen_height * 0.8)  # 80% of screen height
+    
+    # Calculate aspect ratio to maintain image proportions
+    banner_ratio = min(banner_width / banner_image.width, banner_height / banner_image.height)
+    new_width = int(banner_image.width * banner_ratio)
+    new_height = int(banner_image.height * banner_ratio)
+    
+    resize_banner = banner_image.resize((new_width, new_height), Image.LANCZOS)
     banner_photo = ImageTk.PhotoImage(resize_banner)
-    banner_label = Label(home_page, image=banner_photo, bg="#212121")  # add background color to label.
-    banner_label.image = banner_photo  
-    banner_label.place(relx=0.64, rely=0.5, anchor=tk.CENTER) 
+    
+    # Create a frame for the banner
+    banner_frame = Frame(home_page, bg="#212121")
+    banner_frame.place(relx=0.26, rely=0.0, relwidth=0.74, relheight=1.0)
+    
+    banner_label = Label(banner_frame, image=banner_photo, bg="#212121")
+    banner_label.image = banner_photo
+    banner_label.place(relx=0.5, rely=0.5, anchor="center")
 else:
     print("Error: banner.png not found!")
 
 user_data = database()
 
 # User
-username = Label(frame1, text=f"Username: {user_data[4]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+username = Label(frame1, text=f"User: {user_data[4]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
 username.pack(pady=10, anchor="w")
 
 # Full Name
-fullname = Label(frame1, text=f"Full Name: {user_data[0]} {user_data[1]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
+fullname = Label(frame1, text=f"Name: {user_data[0]} {user_data[1]}", font=("Times New Roman", 15), bg="#212121", fg="#FF9500")
 fullname.pack(pady=10, anchor="w")
 
 # BMI Calculator

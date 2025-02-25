@@ -7,7 +7,7 @@ class CalorieCalculator:
     def __init__(self, root):
         self.root = root
         self.root.title("Simple Calorie Calculator")
-        self.root.geometry("600x400")
+        self.root.geometry("800x600")
         
         # Food database
         self.food_db = {
@@ -72,7 +72,6 @@ class CalorieCalculator:
         
         self.history.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
-        
         # Total calories
         self.total_var = tk.StringVar(value="Total: 0 kcal")
         ttk.Label(root, textvariable=self.total_var).pack(pady=5)

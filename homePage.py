@@ -43,40 +43,59 @@ def refresh_home_page():
     fullname.config(text=f"Full Name: {user_data[0]} {user_data[1]}")
     home_page.update_idletasks()
 
+# delete user
+def del_acc():
+    delete_page = tk.Toplevel(home_page)
+    delete_page.title("Delete User")
+    delete_page.geometry("400x300")
+    delete_page.configure(bg="#212121")
+
+    # Username field
+    tk.Label(delete_page, text="Username:", font=("Times New Roman", 12), fg="#FF9500", bg="#212121").pack(pady=5)
+    username_entry = tk.Entry(delete_page, font=("Times New Roman", 12))
+    username_entry.pack(pady=5)
+
+    # Password field
+    tk.Label(delete_page, text="Password:", font=("Times New Roman", 12), fg="#FF9500", bg="#212121").pack(pady=5)
+    password_entry = tk.Entry(delete_page, font=("Times New Roman", 12), show="*")  # Password hidden
+    password_entry.pack(pady=5)
+
+    # Confirm deletion
+    def confirm_delete():
+        user = username_entry.get()
+        passw = password_entry.get()
+
+        # Ensuring all fields are filled
+        if not user or not passw:
+            messagebox.showerror("Error", "Please fill all the fields!")
+            return
+
+        # Delete user from database
+        conn = sqlite3.connect("activarc.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE username=? AND password=?", (user, passw))
+        conn.commit()
+        conn.close()
+
+        messagebox.showinfo("Success", "Account deleted successfully!")
+        delete_page.destroy()
+        home_page.destroy()
+        subprocess.run(["python", "loginPage.py"])
+
+    # Confirm
+    con = Button(delete_page, text="Confirm Delete", font=("Times New Roman", 12), fg="#FF9500", bg="#212121", command=confirm_delete)
+    con.pack(pady=10)
+
 # logout
 def logout():
     home_page.destroy()
     subprocess.run(["python", "loginPage.py"])
 
-
 # new page for more  
 def more():
     more_page=Toplevel()
-
     more_page.title("More")
     more_page.geometry("250x1080")
-
-    # BMI calculator button
-    bmi_button=Button(more_page,text="BMI Calculator",font=("Times New Roman", 15))
-    bmi_button.place(x=20,y=20)
-
-    # Calorie calculator button
-    calorie_button=Button(more_page,text="Calorie Calculator",font=("Times New Roman", 15))
-    calorie_button.place(x=20,y=60)
-
-    # Workout button
-    workout_button=Button(more_page,text="Workout",font=("Times New Roman", 15))
-    workout_button.place(x=20,y=100)
-
-    #Change Password button
-    change_pswd=Button(more_page,text="Change Password",font=("Times New Roman",15))
-    change_pswd.place(x=20,y=150)
-
-    # Log out button
-    log_out_btn=Button(more_page,text="Log Out",font=("Times New Roman",15))
-    log_out_btn.place(x=20,y=200)
-
-    mainloop()
 
 def change_pwd():
     subprocess.run(["python","forgotAndResetPassword.py"])
@@ -136,6 +155,10 @@ change_pwd.pack(pady=10,anchor="w")
 # Log out Button
 log_out_btn = Button(frame1, text="Log Out",font=("Times New Roman",15),fg="#FF9500",bg="#212121",command=logout)
 log_out_btn.pack(pady=10,anchor="w")
+
+# Delete user Button
+del_user = Button(frame1, text="Delete User",font=("Times New Roman",15),fg="#DC143C",bg="#212121",command=del_acc)
+del_user.pack(pady=10,anchor="w")
 
 # About us
 about_us=Label(frame1, text=

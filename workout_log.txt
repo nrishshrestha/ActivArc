@@ -1,8 +1,3 @@
-Workout Log - 2025-02-25 19:10:16
-Squats: 5 sets x 10 reps - 30.0 kcal
-Sit-ups: 5 sets x 10 reps - 15.0 kcal
-
-
 === Workout Log ===
 User ID: 3
 Date: 2025-02-25 23:24:16
@@ -11,4 +6,3 @@ Workout: Squats          Sets: 5     Reps: 10    Calories: 30.0 kcal
 Workout: Burpees         Sets: 3     Reps: 15    Calories: 54.0 kcal
 --------------------------------------------------
 Total Calories Burned: 84.0 kcal
-

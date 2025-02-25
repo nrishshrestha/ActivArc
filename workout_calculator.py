@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import datetime
+import sqlite3
 
 # Define the calories burned per rep for each workout type
 CALORIES_PER_REP = { 
@@ -19,6 +20,16 @@ result_label = None
 workout_frame = None
 bk = "#282828"  # Dark background
 oran = "#FF9500"  # Orange accent
+
+def load_session():
+    try:
+        with open("session.txt", "r") as file:
+            content = file.read().strip()
+            if content:  # Check if content is not empty
+                return int(content)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Error loading session: {e}")
+    return None  # Return None if any error occurs or file is empty
 
 def add_workout():
     # Add a new row of workout entry fields
@@ -53,25 +64,54 @@ def calculate_calories():
     result_label.config(text=f"Total Calories Burned: {total_calories:.1f} kcal")
 
 def save_workout():
+    user_id = load_session()
+    if user_id is None:
+        messagebox.showerror("Error", "No user session found. Please log in again.")
+        return
+
     current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    with open("workout_log.txt", "a") as file:
-        file.write(f"Workout Log - {current_datetime}\n")
-        for workout_var, sets_entry, reps_entry in workout_entries:
-            workout = workout_var.get()
-            sets = sets_entry.get()
-            reps = reps_entry.get()
-            if workout != "Select Workout" and sets and reps:
-                try:
-                    sets = int(sets)
-                    reps = int(reps)
-                    calories_burned = CALORIES_PER_REP.get(workout, 0) * sets * reps
-                    file.write(f"{workout}: {sets} sets x {reps} reps - {calories_burned:.1f} kcal\n")
-                except ValueError:
-                    continue
-        file.write("\n")
-    
-    messagebox.showinfo("Workout Saved", "Your workout has been saved successfully!")
+    workout_data = []
+
+    for workout_var, sets_entry, reps_entry in workout_entries:
+        workout = workout_var.get()
+        sets = sets_entry.get()
+        reps = reps_entry.get()
+        if workout != "Select Workout" and sets and reps:
+            try:
+                sets = int(sets)
+                reps = int(reps)
+                calories_burned = CALORIES_PER_REP.get(workout, 0) * sets * reps
+                workout_data.append((user_id, workout, sets, reps, calories_burned, current_datetime))
+            except ValueError:
+                continue
+
+    if workout_data:
+        try:
+            conn = sqlite3.connect("activarc.db")
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS workouts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    workout TEXT NOT NULL,
+                    sets INTEGER NOT NULL,
+                    reps INTEGER NOT NULL,
+                    calories_burned REAL NOT NULL,
+                    datetime TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                );
+            """)
+            cursor.executemany("""
+                INSERT INTO workouts (user_id, workout, sets, reps, calories_burned, datetime)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, workout_data)
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Workout Saved", "Your workout has been saved successfully!")
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Database error: {e}")
+    else:
+        messagebox.showerror("Error", "No valid workout data to save.")
 
 def clear_all():
     for widgets in workout_frame.winfo_children()[3:]:

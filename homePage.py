@@ -46,6 +46,7 @@ def refresh_home_page():
 # logout
 def logout():
     home_page.destroy()
+    subprocess.run(["python", "loginPage.py"])
 
 
 # new page for more  

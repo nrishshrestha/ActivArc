@@ -18,3 +18,12 @@ Food: Cauliflower and Potatoes Weight: 50.0g      Calories: 75.0 kcal
 --------------------------------------------------
 Total Calories: 120.0 kcal
 
+
+=== Food Log ===
+User ID: 3
+Date: 2025-02-25 22:54:28
+--------------------------------------------------
+Food: Bread                Weight: 45.0g      Calories: 50.0 kcal
+--------------------------------------------------
+Total Calories: 50.0 kcal
+

@@ -86,6 +86,7 @@ def save_workout():
 
     current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     workout_data = []
+    total_calories = 0
 
     for workout_var, sets_entry, reps_entry in workout_entries:
         workout = workout_var.get()
@@ -122,7 +123,26 @@ def save_workout():
             """, workout_data)
             conn.commit()
             conn.close()
-            messagebox.showinfo("Workout Saved", "Your workout has been saved successfully!")
+
+            # Add workout logging to text file
+            with open("workout_log.txt", "a") as file:
+                file.write("\n=== Workout Log ===\n")
+                file.write(f"User ID: {user_id}\n")
+                file.write(f"Date: {current_datetime}\n")
+                file.write("-" * 50 + "\n")
+                
+                # Write workout items
+                for user_id, workout, sets, reps, calories, _ in workout_data:
+                    total_calories += calories
+                    file.write(f"Workout: {workout:<15} Sets: {sets:<5} Reps: {reps:<5} Calories: {calories:.1f} kcal\n")
+                
+                # Write total
+                file.write("-" * 50 + "\n")
+                file.write(f"Total Calories Burned: {total_calories:.1f} kcal\n\n")
+            
+            messagebox.showinfo("Success", "Workout saved successfully to database and workout_log.txt!")
+            clear_all()  # Clear the form after saving
+            
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Database error: {e}")
     else:

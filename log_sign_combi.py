@@ -4,8 +4,12 @@ from tkinter import ttk
 from tkinter import messagebox
 import datetime
 from PIL import Image, ImageTk
+<<<<<<< HEAD
 import sqlite3
 from typing import List, Tuple, Dict
+=======
+import subprocess
+>>>>>>> 3f2d58c45b746cc08c4992972e73dadf6fe7445f
 
 #Global declarations at the top of the file
 global root, first_name, last_name, month, day, year, gender, username, password, confirm_password
@@ -98,14 +102,26 @@ def verify_login():
 # Login page
 def login():
     global page1, username_entry, password_entry
+
     page1 = tk.Tk()
     page1.title("ActivArc")
     page1.configure(bg="#212121")
 
+    def close_page():
+        page1.destroy()
+
+    def open_signup_page():
+        page1.destroy()
+        subprocess.run(["python", "signUpPage.py"])
+
+    def open_forgot_password_page():
+        page1.destroy()
+        subprocess.run(["python", "forgotAndResetPassword.py"])
+
     # Maximize the window manually by getting the screen's dimensions
     screen_width = page1.winfo_screenwidth()
     screen_height = page1.winfo_screenheight()
-    page1.geometry(f"{screen_width}x{screen_height}")  
+    page1.geometry(f"{screen_width}x{screen_height}")  # Set window size to screen size
 
     def password_show_hide():
         check = var.get()
@@ -116,17 +132,19 @@ def login():
 
     # Frame for centralization
     main_frame = Frame(page1, bg="lightgray", relief=GROOVE, bd=2, padx=20, pady=20)
-    main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+    main_frame_width = 400  # Set the width of the frame
+    main_frame_height = 400  # Set the height of the frame
+    main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)  # Center the frame relative to the window
 
     # Username Entrybox and label
-    username_label = Label(main_frame, text="Username", font=("Times New Roman", 15), bg="lightgray")
-    username_label.pack(pady=10, anchor="w")
+    username = Label(main_frame, text="Username", font=("Times New Roman", 15), bg="lightgray")
+    username.pack(pady=10, anchor="w")
     username_entry = Entry(main_frame, font=("Times New Roman", 15))
     username_entry.pack(pady=5, fill=X)
 
     # Password Entrybox and label
-    password_label = Label(main_frame, text="Password", font=("Times New Roman", 15), bg="lightgray")
-    password_label.pack(pady=10, anchor="w")
+    password = Label(main_frame, text="Password", font=("Times New Roman", 15), bg="lightgray")
+    password.pack(pady=10, anchor="w")
     password_entry = Entry(main_frame, font=("Times New Roman", 15), show="*")
     password_entry.pack(pady=5, fill=X)
 
@@ -136,24 +154,27 @@ def login():
     c1.pack(pady=10, anchor="w")
 
     # Login Button
-    login_btn = Button(main_frame, text="Login", font=("Times New Roman", 15), command=verify_login)
-    login_btn.pack(pady=10)
+    login_button = Button(main_frame, text="Login", font=("Times New Roman", 15), command=home_page)
+    login_button.pack(pady=10)
+
+    # Forgot Password
+    fpassword = Button(main_frame, text="Forgot Password", font=("Times New Roman", 15), command=open_forgot_password_page)
+    fpassword.pack(pady=10)
 
     # Don't Have an account?
-    noacc_label = Label(main_frame, text="Don't have an account? | Create one for free!", font=("Times New Roman", 10), fg="blue", bg="lightgray")
-    noacc_label.pack(pady=10)
+    noacc = Label(main_frame, text="Don't have an account? | Create one for free!", font=("Times New Roman", 10), fg="blue", bg="lightgray")
+    noacc.pack(pady=10)
 
     # Sign Up Button
-    sign_up_btn = Button(main_frame, text="Sign up", font=("Times New Roman", 15), command=signup_page)
-    sign_up_btn.pack(pady=10)
+    signup = Button(main_frame, text="Sign up", font=("Times New Roman", 15), command=open_signup_page)
+    signup.pack(pady=10)
 
     page1.mainloop()
 
 # Signup page
 def signup_page():
     page1.destroy()
-    
-    # Function to create name input fields
+
     def create_name_fields(frame):
         global first_name,last_name
         ttk.Label(frame, text="First Name").grid(row=0, column=0, sticky=tk.W)
@@ -275,15 +296,14 @@ def signup_page():
     
     def switch_to_login(current_window):
         current_window.destroy()  # Close the sign-up page
-        login()  # Open the login page
-
+        subprocess.run(["python", "loginPage.py"])
 
     # Main entry point
     if __name__ == "__main__":
         root = create_signup_form()
         root.mainloop()
-
 def home_page():
+<<<<<<< HEAD
     # new page for more  
     def more():
         more_page=Toplevel()
@@ -732,5 +752,10 @@ def home_page():
     about_us.pack(side="bottom",pady=50,anchor="w") 
 
     mainloop()
+=======
+    page1.destroy()
+    # calls homePage
+    subprocess.run(["python","homePage.py"])
+>>>>>>> 3f2d58c45b746cc08c4992972e73dadf6fe7445f
 
 login()  # starts with login 

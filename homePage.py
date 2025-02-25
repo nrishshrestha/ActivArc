@@ -181,7 +181,8 @@ del_user = Button(frame1, text="Delete User", font=("Times New Roman", 15), fg="
 del_user.pack(pady=10, anchor="w")
 
 # About us
-about_us = Label(frame1, text="About us: \nAt ActivArc, we're passionate about empowering \nindividuals to achieve their fitness goals. \nBorn from a shared desire to make fitness tracking \nmore accessible and insightful, ActivArc combines \ncutting-edge technology with a user-friendly design.\nWe believe that everyone deserves the tools to \nunderstand their bodies and unlock their full potential.\nOur team is dedicated to continuous innovation, constantly \nstriving to improve ActivArc and provide you with the \nmost accurate and motivating fitness companion.", font=("Arial", 10), height=15, width=70, justify="center", wraplength=500, bg="#212121", fg="#FF9500")
+about_us = Label(frame1, text='''About us:
+                 At ActivArc, we're passionate about empowering individuals to achieve their fitness goals. \nBorn from a shared desire to make fitness tracking \nmore accessible and insightful, ActivArc combines \ncutting-edge technology with a user-friendly design.\nWe believe that everyone deserves the tools to \nunderstand their bodies and unlock their full potential.\nOur team is dedicated to continuous innovation, constantly \nstriving to improve ActivArc and provide you with the \nmost accurate and motivating fitness companion.''', font=("Arial", 10), height=15, width=70, justify="center", wraplength=500, bg="#212121", fg="#FF9500")
 about_us.pack(side="bottom", pady=50, anchor="w")
 
 mainloop()

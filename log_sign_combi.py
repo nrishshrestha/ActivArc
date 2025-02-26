@@ -20,7 +20,7 @@ def database():
                    last_name TEXT NOT NULL,
                    birthday TEXT NOT NULL,
                    gender TEXT NOT NULL,
-                   username TEXT UNIQUE,
+                   username TEXT UNIQUE,9
                    password TEXT NOT NULL)""")
     conn.commit()
     conn.close()

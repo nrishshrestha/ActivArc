@@ -25,7 +25,7 @@ def database():
     conn.commit()
     conn.close()
 
-database() # Initializes the database
+    database() # Initializes the database
 
 # Function to sign up a new user
 def signup():  

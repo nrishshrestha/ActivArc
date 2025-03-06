@@ -38,7 +38,6 @@ Total Calories: 70.0 kcal
 
 
 === Food Log ===
-<<<<<<< HEAD
 User ID: 11
 Date: 2025-02-26 01:03:23
 --------------------------------------------------
@@ -48,21 +47,12 @@ Food: Milk                 Weight: 150.0g     Calories: 63.0 kcal
 Food: Chicken Breast       Weight: 200.0g     Calories: 330.0 kcal
 --------------------------------------------------
 Total Calories: 621.8 kcal
-=======
-User ID: 10
-Date: 2025-02-26 01:00:18
---------------------------------------------------
-Food: Chicken Breast       Weight: 1000.0g    Calories: 1650.0 kcal
-Food: Bread                Weight: 1000.0g    Calories: 500.0 kcal
---------------------------------------------------
-Total Calories: 2150.0 kcal
 
 
 === Food Log ===
-User ID: 10
-Date: 2025-02-26 01:00:22
+User ID: 1
+Date: 2025-02-26 21:37:01
 --------------------------------------------------
 --------------------------------------------------
 Total Calories: 0.0 kcal
->>>>>>> f0cfbdb1025e3ff56784a3e09cad0ae2b2f68cc3
 
